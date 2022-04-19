@@ -28,6 +28,24 @@ body {
 .nav-title {
     font-size: 2rem;
 }
+.navbar-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+.error-msg {
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--clr-3);
+    background-color: rgb(255, 95, 95);
+    width: max-content;
+    padding: 0 0.5rem;
+    border-radius: 5px;
+    animation: bounceIn 500ms ease;
+}
 .nav-button {
     font-weight: bold;
     letter-spacing: 1px;
@@ -106,18 +124,6 @@ main {
     gap: 20px;
     flex-wrap: wrap;
 }
-.error-msg {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--clr-3);
-    margin: 0 auto 20px auto;
-    background-color: rgb(255, 95, 95);
-    width: max-content;
-    padding: 0.5rem;
-    border-radius: 5px;
-    animation: bounceIn 500ms ease;
-}
 .Grid-container:last-child {
     margin-bottom: 30px;
 }
@@ -167,10 +173,10 @@ main {
 }
 .node-visited {
     background-color: rgb(116, 116, 255);
+    animation: scale 200ms ease;
 }
 .node-shortest-path {
     background-color: rgb(163, 255, 163);
-    animation: scale 200ms ease;
 }
 .Modal {
     display: flex;
@@ -185,7 +191,7 @@ main {
     bottom: 0px;
     left: 0px;
     outline: none;
-    animation: bounceIn 500ms ease infinite alternate;
+    animation: bounceIn 500ms ease;
 }
 @keyframes bounceIn {
     0% {
