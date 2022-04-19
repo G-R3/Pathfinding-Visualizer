@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "./Navbar";
 import Grid from "./Grid";
-import { FiAlertTriangle } from "react-icons/fi";
 
 const startNodeRows = 2;
 const startNodeCols = 10;
@@ -111,13 +110,11 @@ export default function Visualizer() {
 
     return (
         <div>
-            <Navbar handleClick={handleClick} visualize={visualize} />
-            {error && (
-                <div className="error-msg">
-                    <FiAlertTriangle size={25} />
-                    <h2> Choose Algorithms</h2>
-                </div>
-            )}
+            <Navbar
+                handleClick={handleClick}
+                visualize={visualize}
+                error={error}
+            />
             <main>
                 <div className="Grid-container">
                     <Grid
