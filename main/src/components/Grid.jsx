@@ -220,6 +220,7 @@ export default function Grid({
                     setAlgorithm={setAlgorithm}
                     visualize={visualize}
                     setIsReady={setIsReady}
+                    isAnimating={isAnimating}
                 />
                 <div className="Grid-Controller-buttons">
                     <button
