@@ -42,10 +42,8 @@ export default function Grid({
 
     useEffect(() => {
         if (!visualize) {
-            console.log("stop..");
             return;
         }
-        console.log("clearing path");
         clearCurrentPath(grid, gridName);
         setIsFinished(false);
         visualizeAlgo(algorithm);
@@ -223,20 +221,22 @@ export default function Grid({
                     visualize={visualize}
                     setIsReady={setIsReady}
                 />
-                <button
-                    className="btn"
-                    onClick={() => setNewGrid(grid, gridName)}
-                    disabled={isAnimating}
-                >
-                    Clear Grid
-                </button>
-                <button
-                    className="btn"
-                    onClick={() => clearCurrentPath(grid, gridName)}
-                    disabled={isAnimating}
-                >
-                    Clear Path
-                </button>
+                <div className="Grid-Controller-buttons">
+                    <button
+                        className="btn"
+                        onClick={() => setNewGrid(grid, gridName)}
+                        disabled={isAnimating}
+                    >
+                        Clear Grid
+                    </button>
+                    <button
+                        className="btn"
+                        onClick={() => clearCurrentPath(grid, gridName)}
+                        disabled={isAnimating}
+                    >
+                        Clear Path
+                    </button>
+                </div>
             </div>
             <div className="Grid">
                 {isFinished ? (
