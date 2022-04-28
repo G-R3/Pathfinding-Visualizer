@@ -2,7 +2,13 @@ import React from "react";
 import { FaPlay } from "react-icons/fa";
 import { FiAlertTriangle } from "react-icons/fi";
 
-export default function Navbar({ handleClick, visualize, error }) {
+export default function Navbar({
+    handleClick,
+    visualize,
+    error,
+    setMirrorGrids,
+    mirrorGrids,
+}) {
     return (
         <nav className="navbar">
             <p className="nav-title">Visualizer</p>
@@ -13,6 +19,12 @@ export default function Navbar({ handleClick, visualize, error }) {
                         <p> Choose Algorithms</p>
                     </div>
                 )}
+                <input
+                    type="checkbox"
+                    name="check"
+                    id="check"
+                    onChange={() => setMirrorGrids(!mirrorGrids)}
+                />
                 <button
                     className="btn nav-button"
                     onClick={handleClick}

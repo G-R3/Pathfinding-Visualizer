@@ -16,6 +16,9 @@ export default function Visualizer() {
     const [isGridOneAnimating, setIsGridOneAnimating] = useState(false);
     const [isGridTwoAnimating, setIsGridTwoAnimating] = useState(false);
 
+    const [mirrorGrids, setMirrorGrids] = useState(false);
+    const [parentGrid, setParentGrid] = useState([]);
+
     const getGridWithoutPath = (grid) => {
         let newGrid = grid.slice();
         for (let row of grid) {
@@ -114,6 +117,8 @@ export default function Visualizer() {
                 handleClick={handleClick}
                 visualize={visualize}
                 error={error}
+                setMirrorGrids={setMirrorGrids}
+                mirrorGrids={mirrorGrids}
             />
             <main>
                 <div className="Grid-container">
