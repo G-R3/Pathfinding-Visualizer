@@ -6,17 +6,16 @@ import { astar, getNodesInShortestPathOrderAStar } from "../algorithms/astar";
 import { bfs, getNodesInShortestPathOrderBFS } from "../algorithms/bfs";
 import { dfs, getNodesInShortestPathOrderDFS } from "../algorithms/dfs";
 
-const startNodeRows = 2;
-const startNodeCols = 10;
-const endNodeRows = 47;
-const endNodeCols = 10;
-
 let startTime = 0;
 let endTime = 0;
 let shortestPathLength = 0;
 let totalVisitedNodes = 0;
 
 export default function Grid({
+    startNodeRows,
+    startNodeCols,
+    endNodeRows,
+    endNodeCols,
     setIsReady,
     setVisualize,
     visualize,
@@ -24,15 +23,47 @@ export default function Grid({
     isAnimating,
     setIsAnimating,
     clearGrid,
-    getInitialGrid,
     clearPath,
+    handleNodeClick,
+    handleMouseUp,
+    handleMouseEnter,
+    handleMouseDown,
+    mirrorGrid,
+    parentGrid,
 }) {
-    const [isMouseDown, setIsMouseDown] = useState(false);
+    // const [isMouseDown, setIsMouseDown] = useState(false);
     const [algorithm, setAlgorithm] = useState("");
     const [grid, setGrid] = useState([]);
     const [isFinished, setIsFinished] = useState(false);
 
+    const getInitialGrid = (numRows = 50, numCols = 20) => {
+        let initialGrid = [];
+
+        for (let row = 0; row < numRows; row++) {
+            let gridRow = [];
+            for (let col = 0; col < numCols; col++) {
+                gridRow.push({
+                    row,
+                    col,
+                    startNode: row === startNodeRows && col === startNodeCols,
+                    endNode: row === endNodeRows && col === endNodeCols,
+                    previousNode: null,
+                    distance: Infinity,
+                    isWall: false,
+                    isVisited: false,
+                });
+            }
+            initialGrid.push(gridRow);
+        }
+
+        return initialGrid;
+    };
+
     useEffect(() => {
+        if (mirrorGrid && parentGrid) {
+            setGrid(parentGrid);
+            return;
+        }
         // this is hardcoded based on the values of the CSS height & weight properties of the Grid class.
         // const initialGrid = getInitialGrid(720 / 20, 600 / 20);
         const initialGrid = getInitialGrid(50, 20);
@@ -48,29 +79,6 @@ export default function Grid({
         setIsFinished(false);
         visualizeAlgo(algorithm);
     }, [visualize]);
-
-    const handleMouseDown = (node) => {
-        if (visualize) return;
-        setIsMouseDown(true);
-    };
-    const handleMouseEnter = (evt, node) => {
-        if (visualize) return;
-        if (isMouseDown && !node.startNode && !node.endNode) {
-            evt.target.classList.toggle("wall");
-            node.isWall = !node.isWall;
-        }
-    };
-
-    const handleMouseUp = () => {
-        setIsMouseDown(false);
-    };
-
-    const handleClick = (e, node) => {
-        if (!node.startNode && !node.endNode) {
-            e.target.classList.toggle("wall");
-            node.isWall = !node.isWall;
-        }
-    };
 
     const animateShortestPath = (nodesInShortestPathOrder) => {
         return new Promise((resolve, reject) => {
@@ -274,7 +282,9 @@ export default function Grid({
                                             handleMouseEnter(e, node)
                                         }
                                         onMouseUp={handleMouseUp}
-                                        onClick={(e) => handleClick(e, node)}
+                                        onClick={(e) =>
+                                            handleNodeClick(e, node)
+                                        }
                                     ></div>
                                 );
                             })}

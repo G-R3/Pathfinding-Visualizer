@@ -173,10 +173,10 @@ main {
 }
 .node-visited {
     background-color: rgb(116, 116, 255);
-    animation: scale 200ms ease;
 }
 .node-shortest-path {
     background-color: rgb(163, 255, 163);
+    animation: scale 200ms ease;
 }
 .Modal {
     display: flex;

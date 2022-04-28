@@ -6,8 +6,8 @@ export default function Navbar({
     handleClick,
     visualize,
     error,
-    setMirrorGrids,
     mirrorGrids,
+    setMirrorGrids,
 }) {
     return (
         <nav className="navbar">

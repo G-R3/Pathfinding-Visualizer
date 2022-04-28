@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Grid from "./Grid";
 
@@ -15,9 +15,9 @@ export default function Visualizer() {
     const [gridTwoIsReady, setGridTwoIsReady] = useState(false);
     const [isGridOneAnimating, setIsGridOneAnimating] = useState(false);
     const [isGridTwoAnimating, setIsGridTwoAnimating] = useState(false);
-
     const [mirrorGrids, setMirrorGrids] = useState(false);
     const [parentGrid, setParentGrid] = useState([]);
+    const [isMouseDown, setIsMouseDown] = useState(false);
 
     const getGridWithoutPath = (grid) => {
         let newGrid = grid.slice();
@@ -111,6 +111,38 @@ export default function Visualizer() {
         return newGrid;
     };
 
+    const handleMouseDown = (node) => {
+        if (visualize) return;
+        setIsMouseDown(true);
+    };
+    const handleMouseEnter = (evt, node) => {
+        if (visualize) return;
+        if (isMouseDown && !node.startNode && !node.endNode) {
+            evt.target.classList.toggle("wall");
+            node.isWall = !node.isWall;
+        }
+    };
+
+    const handleMouseUp = () => {
+        setIsMouseDown(false);
+    };
+
+    const handleNodeClick = (e, node) => {
+        if (!node.startNode && !node.endNode) {
+            e.target.classList.toggle("wall");
+            node.isWall = !node.isWall;
+        }
+    };
+
+    useEffect(() => {
+        if (!mirrorGrids) {
+            setParentGrid([]);
+            return;
+        }
+        const newGrid = getInitialGrid();
+        setParentGrid(newGrid);
+    }, [mirrorGrids]);
+
     return (
         <div>
             <Navbar
@@ -123,6 +155,10 @@ export default function Visualizer() {
             <main>
                 <div className="Grid-container">
                     <Grid
+                        startNodeRows={startNodeRows}
+                        startNodeCols={startNodeCols}
+                        endNodeRows={endNodeRows}
+                        endNodeCols={endNodeCols}
                         setIsReady={setGridOneIsReady}
                         setVisualize={setVisualize}
                         visualize={visualize}
@@ -131,11 +167,20 @@ export default function Visualizer() {
                         setIsAnimating={setIsGridOneAnimating}
                         clearGrid={clearGrid}
                         clearPath={clearPath}
-                        getInitialGrid={getInitialGrid}
+                        handleNodeClick={handleNodeClick}
+                        handleMouseUp={handleMouseUp}
+                        handleMouseEnter={handleMouseEnter}
+                        handleMouseDown={handleMouseDown}
+                        mirrorGrids={mirrorGrids}
+                        grid={parentGrid}
                     />
                 </div>
                 <div className="Grid-container">
                     <Grid
+                        startNodeRows={startNodeRows}
+                        startNodeCols={startNodeCols}
+                        endNodeRows={endNodeRows}
+                        endNodeCols={endNodeCols}
                         setIsReady={setGridTwoIsReady}
                         setVisualize={setVisualize}
                         visualize={visualize}
@@ -144,7 +189,12 @@ export default function Visualizer() {
                         setIsAnimating={setIsGridTwoAnimating}
                         clearGrid={clearGrid}
                         clearPath={clearPath}
-                        getInitialGrid={getInitialGrid}
+                        handleNodeClick={handleNodeClick}
+                        handleMouseUp={handleMouseUp}
+                        handleMouseEnter={handleMouseEnter}
+                        handleMouseDown={handleMouseDown}
+                        mirrorGrids={mirrorGrids}
+                        grid={parentGrid}
                     />
                 </div>
             </main>
