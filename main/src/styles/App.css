@@ -236,7 +236,7 @@ main {
     overflow-x: hidden;
     overflow-y: hidden;
     position: absolute;
-    z-index: 50;
+    /* z-index: 50; */
     top: 0px;
     right: 0px;
     bottom: 0px;
@@ -299,10 +299,12 @@ main {
     padding-top: 0.5rem;
 }
 .Modal-Footer-Button {
-    color: red;
+    font-size: 1.1rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #f56565;
     border: none;
     background: transparent;
-    font-weight: bold;
     text-transform: uppercase;
     padding: 0.75rem 1.5rem;
     margin: 0.25rem;
