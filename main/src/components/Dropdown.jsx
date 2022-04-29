@@ -65,7 +65,9 @@ export default function Dropdown({ setAlgorithm, setIsReady, isAnimating }) {
                                 onClick={() => handleSetValue(item)}
                                 style={{
                                     backgroundColor:
-                                        item.title === val ? "#202020" : "",
+                                        item.title === val
+                                            ? "rgba(32, 32, 32, 0.8)"
+                                            : "",
                                 }}
                             >
                                 {item.title}

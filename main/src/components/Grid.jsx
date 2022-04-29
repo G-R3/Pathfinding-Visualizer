@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { AiOutlineClear } from "react-icons/ai";
+import { GiPathDistance } from "react-icons/gi";
 import Dropdown from "./Dropdown";
 import Modal from "./Modal";
 import { dijkstra, getNodesInShortestPathOrder } from "../algorithms/dijkstra";
@@ -61,10 +63,7 @@ export default function Grid({
 
     useEffect(() => {
         if (parentGrid) {
-            console.log("replicating grids");
             setGrid(parentGrid);
-            console.log("new Grid");
-            console.log(grid);
             return;
         }
         // this is hardcoded based on the values of the CSS height & weight properties of the Grid class.
@@ -244,18 +243,20 @@ export default function Grid({
                 />
                 <div className="Grid-Controller-buttons">
                     <button
-                        className="btn"
+                        className="btn clearpath-button"
                         onClick={() => setNewGrid(grid, gridName)}
                         disabled={isAnimating}
                     >
                         Clear Grid
+                        <AiOutlineClear size={25} />
                     </button>
                     <button
-                        className="btn"
+                        className="btn cleargrid-button"
                         onClick={() => clearCurrentPath(grid, gridName)}
                         disabled={isAnimating}
                     >
                         Clear Path
+                        <GiPathDistance size={25} />
                     </button>
                 </div>
             </div>
