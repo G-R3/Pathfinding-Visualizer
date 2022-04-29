@@ -6,6 +6,12 @@
     --clr: #202020;
     --clr-2: #404040;
     --clr-3: #f4f4f4;
+    --clr-4: #e2e8f0;
+    --red: #f56565;
+    --blue: #63b3ed;
+    --green: #9ae6b4;
+    --green-alt: #68d391;
+    --wall: rgba(144, 202, 249, 0.16);
     --transition-duration: 200ms;
 }
 html {
@@ -24,7 +30,7 @@ body {
     align-items: center;
     padding: 1rem 0;
     margin: 0 auto;
-    max-width: 1500px;
+    max-width: 2050px;
 }
 .nav-title {
     font-size: 2rem;
@@ -47,7 +53,7 @@ body {
     align-items: center;
     gap: 10px;
     color: var(--clr-3);
-    background-color: rgb(255, 95, 95);
+    background-color: var(--red);
     width: max-content;
     padding: 0 0.5rem;
     border-radius: 5px;
@@ -96,7 +102,7 @@ input.chk-btn:disabled + label {
     transform: scale(0.98);
 }
 .nav-button-icon {
-    color: rgb(163, 255, 163);
+    color: var(--green);
 }
 .dropdown {
     position: relative;
@@ -147,7 +153,7 @@ input.chk-btn:disabled + label {
     padding: 0.8rem 1rem;
     border: none;
     background-color: var(--clr-2);
-    color: #f4f4f4;
+    color: var(--clr-3);
     cursor: pointer;
     transition: all ease var(--transition-duration);
 }
@@ -203,7 +209,7 @@ main {
     height: 20px;
     outline: 1px solid var(--clr);
     /* display: inline-block; */
-    background-color: #eeeeee;
+    background-color: var(--clr-4);
 }
 @media (max-width: 780px) {
     .node {
@@ -212,21 +218,21 @@ main {
     }
 }
 .wall {
-    background-color: var(--clr-2);
+    background-color: var(--wall);
     animation: scale 200ms ease;
 }
 
 .start-node {
-    background-color: rgb(163, 255, 163);
+    background-color: var(--green-alt);
 }
 .end-node {
-    background-color: rgb(255, 95, 95);
+    background-color: var(--red);
 }
 .node-visited {
-    background-color: rgb(116, 116, 255);
+    background-color: var(--blue);
 }
 .node-shortest-path {
-    background-color: rgb(163, 255, 163);
+    background-color: var(--green);
     animation: scale 200ms ease;
 }
 .Modal {
@@ -266,7 +272,7 @@ main {
     padding: 0 0.5rem;
 }
 .Modal-Content {
-    padding: 2rem;
+    padding: 2rem 2rem 1rem 2rem;
     box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.5);
     position: relative;
     display: flex;
@@ -302,7 +308,7 @@ main {
     font-size: 1.1rem;
     font-weight: bold;
     letter-spacing: 1px;
-    color: #f56565;
+    color: var(--red);
     border: none;
     background: transparent;
     text-transform: uppercase;
