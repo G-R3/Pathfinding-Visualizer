@@ -151,7 +151,7 @@ export default function Visualizer() {
                 visualize={visualize}
                 error={error}
                 setMirrorGrids={setMirrorGrids}
-                mirrorGrids={mirrorGrids}
+                mirroredGrids={mirrorGrids}
             />
             <main>
                 <div className="Grid-container">
