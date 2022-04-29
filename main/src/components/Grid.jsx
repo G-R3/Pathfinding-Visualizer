@@ -24,12 +24,12 @@ export default function Grid({
     setIsAnimating,
     clearGrid,
     clearPath,
-    handleNodeClick,
-    handleMouseUp,
-    handleMouseEnter,
-    handleMouseDown,
-    mirrorGrid,
+    handleNodeClick = null,
+    handleMouseUp = null,
+    handleMouseEnter = null,
+    handleMouseDown = null,
     parentGrid,
+    setParentGrid,
 }) {
     // const [isMouseDown, setIsMouseDown] = useState(false);
     const [algorithm, setAlgorithm] = useState("");
@@ -60,16 +60,18 @@ export default function Grid({
     };
 
     useEffect(() => {
-        if (mirrorGrid && parentGrid) {
+        if (parentGrid) {
+            console.log("replicating grids");
             setGrid(parentGrid);
+            console.log("new Grid");
+            console.log(grid);
             return;
         }
         // this is hardcoded based on the values of the CSS height & weight properties of the Grid class.
         // const initialGrid = getInitialGrid(720 / 20, 600 / 20);
         const initialGrid = getInitialGrid(50, 20);
-
         setGrid(initialGrid);
-    }, []);
+    }, [parentGrid]);
 
     useEffect(() => {
         if (!visualize) {
@@ -211,13 +213,23 @@ export default function Grid({
         }
     };
 
+    // clear walls
     const setNewGrid = (grid, gridName) => {
         const newGrid = clearGrid(grid, gridName);
+        if (parentGrid) {
+            setParentGrid(newGrid);
+            return;
+        }
         setGrid(newGrid);
     };
 
+    // clear path
     const clearCurrentPath = (grid, gridName) => {
         const newGrid = clearPath(grid, gridName);
+        if (parentGrid) {
+            setParentGrid(newGrid);
+            return;
+        }
         setGrid(newGrid);
     };
 

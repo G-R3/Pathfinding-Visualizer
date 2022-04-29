@@ -100,10 +100,11 @@ export default function Visualizer() {
     const clearGrid = (grid, gridName) => {
         for (let row = 0; row < grid.length; row++) {
             for (let col = 0; col < grid[row].length; col++) {
-                if (grid[row][col].startNode || grid[row][col].endNode)
-                    continue;
-                document.getElementById(`${gridName}-${row}-${col}`).className =
-                    "node";
+                if (grid[row][col].isWall) {
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node";
+                }
             }
         }
 
@@ -171,8 +172,8 @@ export default function Visualizer() {
                         handleMouseUp={handleMouseUp}
                         handleMouseEnter={handleMouseEnter}
                         handleMouseDown={handleMouseDown}
-                        mirrorGrids={mirrorGrids}
-                        grid={parentGrid}
+                        parentGrid={mirrorGrids ? parentGrid : null}
+                        setParentGrid={mirrorGrids ? setParentGrid : null}
                     />
                 </div>
                 <div className="Grid-container">
@@ -193,8 +194,8 @@ export default function Visualizer() {
                         handleMouseUp={handleMouseUp}
                         handleMouseEnter={handleMouseEnter}
                         handleMouseDown={handleMouseDown}
-                        mirrorGrids={mirrorGrids}
-                        grid={parentGrid}
+                        parentGrid={mirrorGrids ? parentGrid : null}
+                        setParentGrid={mirrorGrids ? setParentGrid : null}
                     />
                 </div>
             </main>
