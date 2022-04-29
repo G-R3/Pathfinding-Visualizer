@@ -1,17 +1,23 @@
 import React from "react";
 import { FaPlay } from "react-icons/fa";
 import { FiAlertTriangle } from "react-icons/fi";
+import { FaRegClone } from "react-icons/fa";
+import { GiPathDistance } from "react-icons/gi";
 
 export default function Navbar({
     handleClick,
     visualize,
     error,
-    mirrorGrids,
     setMirrorGrids,
+    mirroredGrids,
 }) {
     return (
         <nav className="navbar">
-            <p className="nav-title">Visualizer</p>
+            <h1 className="nav-title">
+                Visualizer
+                <GiPathDistance size={30} />
+            </h1>
+
             <div className="navbar-container">
                 {error && (
                     <div className="error-msg">
@@ -19,12 +25,20 @@ export default function Navbar({
                         <p> Choose Algorithms</p>
                     </div>
                 )}
-                <input
-                    type="checkbox"
-                    name="check"
-                    id="check"
-                    onChange={() => setMirrorGrids(!mirrorGrids)}
-                />
+                <div className="checkbox-container">
+                    <input
+                        type="checkbox"
+                        id="c1"
+                        className="chk-btn"
+                        onChange={() => setMirrorGrids(!mirroredGrids)}
+                        disabled={visualize}
+                    />
+                    <label htmlFor="c1">
+                        Mirror Walls
+                        <FaRegClone size={18} />
+                    </label>
+                </div>
+
                 <button
                     className="btn nav-button"
                     onClick={handleClick}
