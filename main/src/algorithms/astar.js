@@ -1,6 +1,6 @@
 // manhattan heuristics
 function heuristic(neighbor, endNode) {
-    let D = 0;
+    // let D = 0;
     let dx = Math.abs(neighbor.row - endNode.row);
     let dy = Math.abs(neighbor.col - endNode.col);
     return dx + dy; //Math.sqrt(dx * dx + dy * dy);
