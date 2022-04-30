@@ -11,7 +11,7 @@ const getUnvisitedNeighbors = (node, grid) => {
 export const getNodesInShortestPathOrderDFS = (finishNode) => {
     const shortestPathOrder = [];
     let currentNode = finishNode;
-    while (currentNode !== null) {
+    while (currentNode !== null && currentNode.isVisited) {
         shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }

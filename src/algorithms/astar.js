@@ -132,7 +132,7 @@ export const astar = (grid, startNode, endNode) => {
 export const getNodesInShortestPathOrderAStar = (finishNode) => {
     const shortestPathOrder = [];
     let currentNode = finishNode.previousNode;
-    while (!currentNode.startNode) {
+    while (currentNode !== null && currentNode.isVisited) {
         shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }

@@ -38,7 +38,7 @@ export const bfs = (grid, startNode, endNode) => {
 export const getNodesInShortestPathOrderBFS = (finishNode) => {
     const shortestPathOrder = [];
     let currentNode = finishNode;
-    while (currentNode !== null) {
+    while (currentNode !== null && currentNode.isVisited) {
         shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
