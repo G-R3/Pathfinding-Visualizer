@@ -306,7 +306,11 @@ export default function Grid({
         )
             return grid;
         const newGrid = grid.slice();
-        newGrid[endNodePos.row][endNodePos.col].endNode = false;
+        if (parentGrid) {
+            newGrid[endNodeParent.row][endNodeParent.col].endNode = false;
+        } else {
+            newGrid[endNodePos.row][endNodePos.col].endNode = false;
+        }
         newGrid[node.row][node.col].endNode =
             !newGrid[node.row][node.col].endNode;
 
