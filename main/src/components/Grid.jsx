@@ -32,6 +32,7 @@ export default function Grid({
     handleMouseDown = null,
     parentGrid,
     setParentGrid,
+    isMouseDown,
 }) {
     // const [isMouseDown, setIsMouseDown] = useState(false);
     const [algorithm, setAlgorithm] = useState("");
@@ -232,6 +233,25 @@ export default function Grid({
         setGrid(newGrid);
     };
 
+    const mouseDown = (evt, grid, node) => {
+        const newGrid = handleMouseDown(evt, grid, node);
+        if (!newGrid) return;
+        if (parentGrid) {
+            setParentGrid(newGrid);
+            return;
+        }
+        setGrid(newGrid);
+    };
+
+    const mouseEnter = (evt, grid, node) => {
+        if (!isMouseDown) return;
+        const newGrid = handleMouseEnter(evt, grid, node);
+        if (parentGrid) {
+            setParentGrid(newGrid);
+            return;
+        }
+        setGrid(newGrid);
+    };
     return (
         <>
             <div className="Grid-Controller">
@@ -288,16 +308,16 @@ export default function Grid({
                                         key={i}
                                         className={`node ${classes}`}
                                         id={`${gridName}-${node.row}-${node.col}`}
-                                        onMouseDown={() =>
-                                            handleMouseDown(node)
+                                        onMouseDown={(evt) =>
+                                            mouseDown(evt, grid, node)
                                         }
-                                        onMouseEnter={(e) =>
-                                            handleMouseEnter(e, node)
+                                        onMouseEnter={(evt) =>
+                                            mouseEnter(evt, grid, node)
                                         }
                                         onMouseUp={handleMouseUp}
-                                        onClick={(e) =>
-                                            handleNodeClick(e, node)
-                                        }
+                                        // onClick={(e) =>
+                                        //     handleNodeClick(e, node)
+                                        // }
                                     ></div>
                                 );
                             })}

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Grid from "./Grid";
 
-const startNodeRows = 2;
-const startNodeCols = 10;
-const endNodeRows = 47;
-const endNodeCols = 10;
+let startNodeRows = 2;
+let startNodeCols = 10;
+let endNodeRows = 47;
+let endNodeCols = 10;
 
 export default function Visualizer() {
     const [visualize, setVisualize] = useState(false);
@@ -18,6 +18,8 @@ export default function Visualizer() {
     const [mirrorGrids, setMirrorGrids] = useState(false);
     const [parentGrid, setParentGrid] = useState([]);
     const [isMouseDown, setIsMouseDown] = useState(false);
+    const [moveStartNode, setMoveStartNode] = useState(false);
+    const [moveEndNode, setMoveEndNode] = useState(false);
 
     const getGridWithoutPath = (grid) => {
         let newGrid = grid.slice();
@@ -100,11 +102,10 @@ export default function Visualizer() {
     const clearGrid = (grid, gridName) => {
         for (let row = 0; row < grid.length; row++) {
             for (let col = 0; col < grid[row].length; col++) {
-                if (grid[row][col].isWall) {
-                    document.getElementById(
-                        `${gridName}-${row}-${col}`,
-                    ).className = "node";
-                }
+                if (grid[row][col].startNode || grid[row][col].endNode)
+                    continue;
+                document.getElementById(`${gridName}-${row}-${col}`).className =
+                    "node";
             }
         }
 
@@ -112,20 +113,81 @@ export default function Visualizer() {
         return newGrid;
     };
 
-    const handleMouseDown = (node) => {
-        if (visualize) return;
-        setIsMouseDown(true);
+    const createWall = (grid, node) => {
+        if (
+            grid[node.row][node.col].startNode ||
+            grid[node.row][node.col].endNode
+        )
+            return grid;
+        const newGrid = grid.slice();
+        newGrid[node.row][node.col].isWall =
+            !newGrid[node.row][node.col].isWall;
+        return newGrid;
     };
-    const handleMouseEnter = (evt, node) => {
+
+    const moveStart = (grid, node) => {
+        if (grid[node.row][node.col].endNode || grid[node.row][node.col].isWall)
+            return grid;
+        const newGrid = grid.slice();
+        newGrid[startNodeRows][startNodeCols].startNode = false;
+        newGrid[node.row][node.col].startNode =
+            !newGrid[node.row][node.col].startNode;
+        startNodeRows = node.row;
+        startNodeCols = node.col;
+        return newGrid;
+    };
+
+    const moveEnd = (grid, node) => {
+        if (
+            grid[node.row][node.col].startNode ||
+            grid[node.row][node.col].isWall
+        )
+            return grid;
+        const newGrid = grid.slice();
+        newGrid[endNodeRows][endNodeCols].endNode = false;
+        newGrid[node.row][node.col].endNode =
+            !newGrid[node.row][node.col].endNode;
+        endNodeCols = node.col;
+        endNodeRows = node.row;
+        return newGrid;
+    };
+
+    const handleMouseDown = (evt, grid, node) => {
         if (visualize) return;
-        if (isMouseDown && !node.startNode && !node.endNode) {
-            evt.target.classList.toggle("wall");
-            node.isWall = !node.isWall;
+        evt.preventDefault();
+        if (node.startNode) {
+            setMoveStartNode(true);
+        } else if (node.endNode) {
+            setMoveEndNode(true);
+        } else {
+            let newGrid = createWall(grid, node);
+            setIsMouseDown(true);
+            return newGrid;
         }
+        setIsMouseDown(true);
+        return null;
+    };
+    const handleMouseEnter = (evt, grid, node) => {
+        if (visualize || !isMouseDown) return;
+        let newGrid = null;
+        if (moveStartNode) {
+            newGrid = moveStart(grid, node);
+        } else if (moveEndNode) {
+            newGrid = moveEnd(grid, node);
+        } else {
+            newGrid = createWall(grid, node);
+        }
+        return newGrid;
+        // if (isMouseDown && !node.startNode && !node.endNode) {
+        //     evt.target.classList.toggle("wall");
+        //     node.isWall = !node.isWall;
+        // }
     };
 
     const handleMouseUp = () => {
         setIsMouseDown(false);
+        setMoveStartNode(false);
+        setMoveEndNode(false);
     };
 
     const handleNodeClick = (e, node) => {
@@ -174,6 +236,7 @@ export default function Visualizer() {
                         handleMouseDown={handleMouseDown}
                         parentGrid={mirrorGrids ? parentGrid : null}
                         setParentGrid={mirrorGrids ? setParentGrid : null}
+                        isMouseDown={isMouseDown}
                     />
                 </div>
                 <div className="Grid-container">
@@ -196,6 +259,7 @@ export default function Visualizer() {
                         handleMouseDown={handleMouseDown}
                         parentGrid={mirrorGrids ? parentGrid : null}
                         setParentGrid={mirrorGrids ? setParentGrid : null}
+                        isMouseDown={isMouseDown}
                     />
                 </div>
             </main>
