@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { GridContext } from "../context/gridContext";
 import { FaPlay } from "react-icons/fa";
 import { FiAlertTriangle } from "react-icons/fi";
 import { FaRegClone } from "react-icons/fa";
@@ -6,11 +7,12 @@ import { GiPathDistance } from "react-icons/gi";
 
 export default function Navbar({
     handleClick,
-    visualize,
     error,
     setMirrorGrids,
     mirroredGrids,
 }) {
+    const { visualize } = useContext(GridContext);
+
     return (
         <nav className="navbar">
             <h1 className="nav-title">

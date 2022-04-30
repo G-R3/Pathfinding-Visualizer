@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { GridContext } from "../context/gridContext";
 import { AiOutlineClear } from "react-icons/ai";
 import { GiPathDistance } from "react-icons/gi";
 import Dropdown from "./Dropdown";
@@ -19,11 +20,7 @@ export default function Grid({
     endNodeRows,
     endNodeCols,
     setIsReady,
-    setVisualize,
-    visualize,
     gridName,
-    isAnimating,
-    setIsAnimating,
     clearGrid,
     clearPath,
     handleNodeClick = null,
@@ -38,6 +35,8 @@ export default function Grid({
     const [algorithm, setAlgorithm] = useState("");
     const [grid, setGrid] = useState([]);
     const [isFinished, setIsFinished] = useState(false);
+    const { visualize, setGridOneAnimating, setGridTwoAnimating } =
+        useContext(GridContext);
 
     const getInitialGrid = (numRows = 50, numCols = 20) => {
         let initialGrid = [];
@@ -98,9 +97,12 @@ export default function Grid({
                     if (!algorithm) {
                         setIsReady(false);
                     }
-                    setVisualize(false);
-                    setIsAnimating(false);
                     setIsFinished(true);
+                    if (gridName === "first") {
+                        setGridOneAnimating(false);
+                    } else {
+                        setGridTwoAnimating(false);
+                    }
                     resolve();
                 }
             }, 20);
@@ -234,6 +236,7 @@ export default function Grid({
     };
 
     const mouseDown = (evt, grid, node) => {
+        if (visualize) return;
         const newGrid = handleMouseDown(evt, grid, node);
         if (!newGrid) return;
         if (parentGrid) {
@@ -244,7 +247,7 @@ export default function Grid({
     };
 
     const mouseEnter = (evt, grid, node) => {
-        if (!isMouseDown) return;
+        if (!isMouseDown || visualize) return;
         const newGrid = handleMouseEnter(evt, grid, node);
         if (parentGrid) {
             setParentGrid(newGrid);
@@ -252,6 +255,7 @@ export default function Grid({
         }
         setGrid(newGrid);
     };
+
     return (
         <>
             <div className="Grid-Controller">
@@ -259,13 +263,13 @@ export default function Grid({
                     setAlgorithm={setAlgorithm}
                     visualize={visualize}
                     setIsReady={setIsReady}
-                    isAnimating={isAnimating}
+                    isAnimating={visualize}
                 />
                 <div className="Grid-Controller-buttons">
                     <button
                         className="btn clearpath-button"
                         onClick={() => setNewGrid(grid, gridName)}
-                        disabled={isAnimating}
+                        disabled={visualize}
                     >
                         Clear Grid
                         <AiOutlineClear size={25} />
@@ -273,7 +277,7 @@ export default function Grid({
                     <button
                         className="btn cleargrid-button"
                         onClick={() => clearCurrentPath(grid, gridName)}
-                        disabled={isAnimating}
+                        disabled={visualize}
                     >
                         Clear Path
                         <GiPathDistance size={25} />

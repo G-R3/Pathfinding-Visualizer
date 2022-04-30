@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { GridContext } from "../context/gridContext";
 import Navbar from "./Navbar";
 import Grid from "./Grid";
 
@@ -8,18 +9,18 @@ let endNodeRows = 47;
 let endNodeCols = 10;
 
 export default function Visualizer() {
-    const [visualize, setVisualize] = useState(false);
     const [error, setError] = useState(false);
     // idk how I feel about doing it this way. There is probably some better way but for now this works
     const [gridOneIsReady, setGridOneIsReady] = useState(false);
     const [gridTwoIsReady, setGridTwoIsReady] = useState(false);
-    const [isGridOneAnimating, setIsGridOneAnimating] = useState(false);
-    const [isGridTwoAnimating, setIsGridTwoAnimating] = useState(false);
     const [mirrorGrids, setMirrorGrids] = useState(false);
     const [parentGrid, setParentGrid] = useState([]);
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [moveStartNode, setMoveStartNode] = useState(false);
     const [moveEndNode, setMoveEndNode] = useState(false);
+
+    const { visualize, setGridOneAnimating, setGridTwoAnimating } =
+        useContext(GridContext);
 
     const getGridWithoutPath = (grid) => {
         let newGrid = grid.slice();
@@ -70,9 +71,8 @@ export default function Visualizer() {
         }
 
         setError(false);
-        setVisualize(true);
-        setIsGridOneAnimating(true);
-        setIsGridTwoAnimating(true);
+        setGridOneAnimating(true);
+        setGridTwoAnimating(true);
         return;
     };
 
@@ -210,7 +210,6 @@ export default function Visualizer() {
         <div>
             <Navbar
                 handleClick={handleClick}
-                visualize={visualize}
                 error={error}
                 setMirrorGrids={setMirrorGrids}
                 mirroredGrids={mirrorGrids}
@@ -223,11 +222,7 @@ export default function Visualizer() {
                         endNodeRows={endNodeRows}
                         endNodeCols={endNodeCols}
                         setIsReady={setGridOneIsReady}
-                        setVisualize={setVisualize}
-                        visualize={visualize}
                         gridName="first"
-                        isAnimating={isGridOneAnimating}
-                        setIsAnimating={setIsGridOneAnimating}
                         clearGrid={clearGrid}
                         clearPath={clearPath}
                         handleNodeClick={handleNodeClick}
@@ -246,11 +241,7 @@ export default function Visualizer() {
                         endNodeRows={endNodeRows}
                         endNodeCols={endNodeCols}
                         setIsReady={setGridTwoIsReady}
-                        setVisualize={setVisualize}
-                        visualize={visualize}
                         gridName="second"
-                        isAnimating={isGridTwoAnimating}
-                        setIsAnimating={setIsGridTwoAnimating}
                         clearGrid={clearGrid}
                         clearPath={clearPath}
                         handleNodeClick={handleNodeClick}
