@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import Node from "./Node";
 import { GridContext } from "../context/gridContext";
 import { AiOutlineClear } from "react-icons/ai";
 import { GiPathDistance } from "react-icons/gi";
@@ -15,60 +16,53 @@ let shortestPathLength = 0;
 let totalVisitedNodes = 0;
 
 export default function Grid({
-    startNodeRows,
-    startNodeCols,
-    endNodeRows,
-    endNodeCols,
+    getGrid,
     setIsReady,
     gridName,
     clearGrid,
     clearPath,
-    handleNodeClick = null,
-    handleMouseUp = null,
-    handleMouseEnter = null,
-    handleMouseDown = null,
     parentGrid,
     setParentGrid,
-    isMouseDown,
+    startNodeParent,
+    endNodeParent,
+    setStartNodeParent,
+    setEndNodeParent,
 }) {
     // const [isMouseDown, setIsMouseDown] = useState(false);
     const [algorithm, setAlgorithm] = useState("");
     const [grid, setGrid] = useState([]);
     const [isFinished, setIsFinished] = useState(false);
+    const [isMouseDown, setIsMouseDown] = useState(false);
+    const [moveStartNode, setMoveStartNode] = useState(false);
+    const [moveEndNode, setMoveEndNode] = useState(false);
+
+    const [startNodePos, setStartNodePos] = useState(
+        parentGrid ? startNodeParent : { row: 2, col: 10 },
+    );
+    const [endNodePos, setEndNodePos] = useState(
+        parentGrid ? endNodeParent : { row: 47, col: 10 },
+    );
+
     const { visualize, setGridOneAnimating, setGridTwoAnimating } =
         useContext(GridContext);
 
-    const getInitialGrid = (numRows = 50, numCols = 20) => {
-        let initialGrid = [];
-
-        for (let row = 0; row < numRows; row++) {
-            let gridRow = [];
-            for (let col = 0; col < numCols; col++) {
-                gridRow.push({
-                    row,
-                    col,
-                    startNode: row === startNodeRows && col === startNodeCols,
-                    endNode: row === endNodeRows && col === endNodeCols,
-                    previousNode: null,
-                    distance: Infinity,
-                    isWall: false,
-                    isVisited: false,
-                });
-            }
-            initialGrid.push(gridRow);
-        }
-
-        return initialGrid;
-    };
-
     useEffect(() => {
         if (parentGrid) {
+            setStartNodePos(startNodeParent);
+            setEndNodePos(endNodeParent);
             setGrid(parentGrid);
             return;
         }
         // this is hardcoded based on the values of the CSS height & weight properties of the Grid class.
         // const initialGrid = getInitialGrid(720 / 20, 600 / 20);
-        const initialGrid = getInitialGrid(50, 20);
+        const initialGrid = getGrid(
+            50,
+            20,
+            startNodePos.row,
+            startNodePos.col,
+            endNodePos.row,
+            endNodePos.col,
+        );
         setGrid(initialGrid);
     }, [parentGrid]);
 
@@ -76,7 +70,14 @@ export default function Grid({
         if (!visualize) {
             return;
         }
-        clearCurrentPath(grid, gridName);
+        clearCurrentPath(
+            grid,
+            gridName,
+            startNodePos.row,
+            startNodePos.col,
+            endNodePos.row,
+            endNodePos.col,
+        );
         setIsFinished(false);
         visualizeAlgo(algorithm);
     }, [visualize]);
@@ -87,9 +88,11 @@ export default function Grid({
             let interval = setInterval(() => {
                 if (i < nodesInShortestPathOrder.length) {
                     const node = nodesInShortestPathOrder[i];
-                    document.getElementById(
-                        `${gridName}-${node.row}-${node.col}`,
-                    ).className = "node node-shortest-path";
+                    if (!node.startNode && !node.endNode) {
+                        document.getElementById(
+                            `${gridName}-${node.row}-${node.col}`,
+                        ).className = "node node-shortest-path";
+                    }
                 }
                 i++;
                 if (i >= nodesInShortestPathOrder.length) {
@@ -115,9 +118,11 @@ export default function Grid({
             let interval = setInterval(() => {
                 if (visitedNodesInOrder && i < visitedNodesInOrder.length) {
                     const node = visitedNodesInOrder[i];
-                    document.getElementById(
-                        `${gridName}-${node.row}-${node.col}`,
-                    ).className = "node node-visited";
+                    if (!node.startNode && !node.endNode) {
+                        document.getElementById(
+                            `${gridName}-${node.row}-${node.col}`,
+                        ).className = "node node-visited";
+                    }
                 }
                 i++;
                 if (visitedNodesInOrder && i >= visitedNodesInOrder.length) {
@@ -129,14 +134,13 @@ export default function Grid({
     };
 
     const visualizeDijkstra = async () => {
-        const startNode = grid[startNodeRows][startNodeCols];
-        const endNode = grid[endNodeRows][endNodeCols];
+        const startNode = grid[startNodePos.row][startNodePos.col];
+        const endNode = grid[endNodePos.row][endNodePos.col];
         const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrder(endNode);
 
         shortestPathLength = nodesInShortestPath.length;
         totalVisitedNodes = visitedNodesInOrder.length;
-        console.log(nodesInShortestPath);
         startTime = performance.now();
         await animate(visitedNodesInOrder);
         await animateShortestPath(nodesInShortestPath);
@@ -146,8 +150,8 @@ export default function Grid({
     };
 
     const visualizeAStar = async () => {
-        const startNode = grid[startNodeRows][startNodeCols];
-        const endNode = grid[endNodeRows][endNodeCols];
+        const startNode = grid[startNodePos.row][startNodePos.col];
+        const endNode = grid[endNodePos.row][endNodePos.col];
         const visitedNodesInOrder = astar(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrderAStar(endNode);
 
@@ -163,8 +167,8 @@ export default function Grid({
     };
 
     const visualizeBFS = async () => {
-        const startNode = grid[startNodeRows][startNodeCols];
-        const endNode = grid[endNodeRows][endNodeCols];
+        const startNode = grid[startNodePos.row][startNodePos.col];
+        const endNode = grid[endNodePos.row][endNodePos.col];
         const visitedNodesInOrder = bfs(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrderBFS(endNode);
 
@@ -180,8 +184,8 @@ export default function Grid({
     };
 
     const visualizeDFS = async () => {
-        const startNode = grid[startNodeRows][startNodeCols];
-        const endNode = grid[endNodeRows][endNodeCols];
+        const startNode = grid[startNodePos.row][startNodePos.col];
+        const endNode = grid[endNodePos.row][endNodePos.col];
         const visitedNodesInOrder = dfs(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrderDFS(endNode);
 
@@ -216,8 +220,22 @@ export default function Grid({
     };
 
     // clear walls
-    const setNewGrid = (grid, gridName) => {
-        const newGrid = clearGrid(grid, gridName);
+    const setNewGrid = (
+        grid,
+        gridName,
+        startNodeRow,
+        startNodeCol,
+        endNodeRow,
+        endNodeCol,
+    ) => {
+        const newGrid = clearGrid(
+            grid,
+            gridName,
+            startNodeRow,
+            startNodeCol,
+            endNodeRow,
+            endNodeCol,
+        );
         if (parentGrid) {
             setParentGrid(newGrid);
             return;
@@ -226,8 +244,22 @@ export default function Grid({
     };
 
     // clear path
-    const clearCurrentPath = (grid, gridName) => {
-        const newGrid = clearPath(grid, gridName);
+    const clearCurrentPath = (
+        grid,
+        gridName,
+        startNodeRow,
+        startNodeCol,
+        endNodeRow,
+        endNodeCol,
+    ) => {
+        const newGrid = clearPath(
+            grid,
+            gridName,
+            startNodeRow,
+            startNodeCol,
+            endNodeRow,
+            endNodeCol,
+        );
         if (parentGrid) {
             setParentGrid(newGrid);
             return;
@@ -235,9 +267,87 @@ export default function Grid({
         setGrid(newGrid);
     };
 
-    const mouseDown = (evt, grid, node) => {
+    const createWall = (grid, node) => {
+        if (
+            grid[node.row][node.col].startNode ||
+            grid[node.row][node.col].endNode
+        )
+            return grid;
+        const newGrid = grid.slice();
+        newGrid[node.row][node.col].isWall =
+            !newGrid[node.row][node.col].isWall;
+        return newGrid;
+    };
+
+    const moveStart = (grid, node) => {
+        if (grid[node.row][node.col].endNode || grid[node.row][node.col].isWall)
+            return grid;
+        const newGrid = grid.slice();
+        if (parentGrid) {
+            newGrid[startNodeParent.row][startNodeParent.col].startNode = false;
+        } else {
+            newGrid[startNodePos.row][startNodePos.col].startNode = false;
+        }
+        newGrid[node.row][node.col].startNode =
+            !newGrid[node.row][node.col].startNode;
+
+        if (parentGrid) {
+            setStartNodeParent({ row: node.row, col: node.col });
+            return newGrid;
+        }
+        setStartNodePos({ row: node.row, col: node.col });
+        return newGrid;
+    };
+
+    const moveEnd = (grid, node) => {
+        if (
+            grid[node.row][node.col].startNode ||
+            grid[node.row][node.col].isWall
+        )
+            return grid;
+        const newGrid = grid.slice();
+        newGrid[endNodePos.row][endNodePos.col].endNode = false;
+        newGrid[node.row][node.col].endNode =
+            !newGrid[node.row][node.col].endNode;
+
+        if (parentGrid) {
+            setEndNodeParent({ row: node.row, col: node.col });
+            return newGrid;
+        }
+        setEndNodePos({ row: node.row, col: node.col });
+        return newGrid;
+    };
+
+    const handleMouseDown = (evt, node) => {
         if (visualize) return;
-        const newGrid = handleMouseDown(evt, grid, node);
+        evt.preventDefault();
+        if (node.startNode) {
+            setMoveStartNode(true);
+        } else if (node.endNode) {
+            setMoveEndNode(true);
+        } else {
+            let newGrid = createWall(grid, node);
+            setIsMouseDown(true);
+            if (parentGrid) {
+                setParentGrid(newGrid);
+                return;
+            }
+            setGrid(newGrid);
+        }
+        setIsMouseDown(true);
+        return null;
+    };
+    const handleMouseEnter = (evt, node) => {
+        if (visualize || !isMouseDown) return;
+        let newGrid = null;
+        if (moveStartNode) {
+            newGrid = moveStart(grid, node);
+        } else if (moveEndNode) {
+            newGrid = moveEnd(grid, node);
+        } else {
+            newGrid = createWall(grid, node);
+        }
+
         if (!newGrid) return;
         if (parentGrid) {
             setParentGrid(newGrid);
@@ -246,14 +356,10 @@ export default function Grid({
         setGrid(newGrid);
     };
 
-    const mouseEnter = (evt, grid, node) => {
-        if (!isMouseDown || visualize) return;
-        const newGrid = handleMouseEnter(evt, grid, node);
-        if (parentGrid) {
-            setParentGrid(newGrid);
-            return;
-        }
-        setGrid(newGrid);
+    const handleMouseUp = () => {
+        setIsMouseDown(false);
+        setMoveStartNode(false);
+        setMoveEndNode(false);
     };
 
     return (
@@ -268,7 +374,16 @@ export default function Grid({
                 <div className="Grid-Controller-buttons">
                     <button
                         className="btn clearpath-button"
-                        onClick={() => setNewGrid(grid, gridName)}
+                        onClick={() =>
+                            setNewGrid(
+                                grid,
+                                gridName,
+                                startNodePos.row,
+                                startNodePos.col,
+                                endNodePos.row,
+                                endNodePos.col,
+                            )
+                        }
                         disabled={visualize}
                     >
                         Clear Grid
@@ -276,7 +391,16 @@ export default function Grid({
                     </button>
                     <button
                         className="btn cleargrid-button"
-                        onClick={() => clearCurrentPath(grid, gridName)}
+                        onClick={() =>
+                            clearCurrentPath(
+                                grid,
+                                gridName,
+                                startNodePos.row,
+                                startNodePos.col,
+                                endNodePos.row,
+                                endNodePos.col,
+                            )
+                        }
                         disabled={visualize}
                     >
                         Clear Path
@@ -299,30 +423,15 @@ export default function Grid({
                     return (
                         <div key={i}>
                             {row.map((node, i) => {
-                                const classes = node.startNode
-                                    ? "start-node"
-                                    : node.endNode
-                                    ? "end-node"
-                                    : node.isWall
-                                    ? "wall"
-                                    : "";
-
                                 return (
-                                    <div
+                                    <Node
                                         key={i}
-                                        className={`node ${classes}`}
-                                        id={`${gridName}-${node.row}-${node.col}`}
-                                        onMouseDown={(evt) =>
-                                            mouseDown(evt, grid, node)
-                                        }
-                                        onMouseEnter={(evt) =>
-                                            mouseEnter(evt, grid, node)
-                                        }
-                                        onMouseUp={handleMouseUp}
-                                        // onClick={(e) =>
-                                        //     handleNodeClick(e, node)
-                                        // }
-                                    ></div>
+                                        mouseDown={handleMouseDown}
+                                        mouseEnter={handleMouseEnter}
+                                        mouseUp={handleMouseUp}
+                                        node={node}
+                                        gridName={gridName}
+                                    />
                                 );
                             })}
                         </div>

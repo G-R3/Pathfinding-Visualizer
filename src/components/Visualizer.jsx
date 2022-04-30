@@ -3,11 +3,6 @@ import { GridContext } from "../context/gridContext";
 import Navbar from "./Navbar";
 import Grid from "./Grid";
 
-let startNodeRows = 2;
-let startNodeCols = 10;
-let endNodeRows = 47;
-let endNodeCols = 10;
-
 export default function Visualizer() {
     const [error, setError] = useState(false);
     // idk how I feel about doing it this way. There is probably some better way but for now this works
@@ -15,14 +10,24 @@ export default function Visualizer() {
     const [gridTwoIsReady, setGridTwoIsReady] = useState(false);
     const [mirrorGrids, setMirrorGrids] = useState(false);
     const [parentGrid, setParentGrid] = useState([]);
-    const [isMouseDown, setIsMouseDown] = useState(false);
-    const [moveStartNode, setMoveStartNode] = useState(false);
-    const [moveEndNode, setMoveEndNode] = useState(false);
-
+    const [parentStartNodePos, setParentStartNodePos] = useState({
+        row: 2,
+        col: 10,
+    });
+    const [parentEndNodePos, setParentEndNodePos] = useState({
+        row: 47,
+        col: 10,
+    });
     const { visualize, setGridOneAnimating, setGridTwoAnimating } =
         useContext(GridContext);
 
-    const getGridWithoutPath = (grid) => {
+    const getGridWithoutPath = (
+        grid,
+        startNodeRows,
+        startNodeCols,
+        endNodeRows,
+        endNodeCols,
+    ) => {
         let newGrid = grid.slice();
         for (let row of grid) {
             for (let node of row) {
@@ -45,7 +50,14 @@ export default function Visualizer() {
         return newGrid;
     };
 
-    const clearPath = (grid, gridName) => {
+    const clearPath = (
+        grid,
+        gridName,
+        startNodeRows,
+        startNodeCols,
+        endNodeRows,
+        endNodeCols,
+    ) => {
         for (let row = 0; row < grid.length; row++) {
             for (let col = 0; col < grid[0].length; col++) {
                 let node = document.getElementById(`${gridName}-${row}-${col}`);
@@ -59,7 +71,13 @@ export default function Visualizer() {
                 }
             }
         }
-        const newGrid = getGridWithoutPath(grid);
+        const newGrid = getGridWithoutPath(
+            grid,
+            startNodeRows,
+            startNodeCols,
+            endNodeRows,
+            endNodeCols,
+        );
         return newGrid;
     };
 
@@ -76,7 +94,14 @@ export default function Visualizer() {
         return;
     };
 
-    const getInitialGrid = (numRows = 50, numCols = 20) => {
+    const getInitialGrid = (
+        numRows = 50,
+        numCols = 20,
+        startNodeRows = 2,
+        startNodeCols = 10,
+        endNodeRows = 47,
+        endNodeCols = 10,
+    ) => {
         let initialGrid = [];
 
         for (let row = 0; row < numRows; row++) {
@@ -99,7 +124,14 @@ export default function Visualizer() {
         return initialGrid;
     };
 
-    const clearGrid = (grid, gridName) => {
+    const clearGrid = (
+        grid,
+        gridName,
+        startNodeRows,
+        startNodeCols,
+        endNodeRows,
+        endNodeCols,
+    ) => {
         for (let row = 0; row < grid.length; row++) {
             for (let col = 0; col < grid[row].length; col++) {
                 if (grid[row][col].startNode || grid[row][col].endNode)
@@ -109,100 +141,28 @@ export default function Visualizer() {
             }
         }
 
-        let newGrid = getInitialGrid();
+        let newGrid = getInitialGrid(
+            50,
+            20,
+            startNodeRows,
+            startNodeCols,
+            endNodeRows,
+            endNodeCols,
+        );
         return newGrid;
-    };
-
-    const createWall = (grid, node) => {
-        if (
-            grid[node.row][node.col].startNode ||
-            grid[node.row][node.col].endNode
-        )
-            return grid;
-        const newGrid = grid.slice();
-        newGrid[node.row][node.col].isWall =
-            !newGrid[node.row][node.col].isWall;
-        return newGrid;
-    };
-
-    const moveStart = (grid, node) => {
-        if (grid[node.row][node.col].endNode || grid[node.row][node.col].isWall)
-            return grid;
-        const newGrid = grid.slice();
-        newGrid[startNodeRows][startNodeCols].startNode = false;
-        newGrid[node.row][node.col].startNode =
-            !newGrid[node.row][node.col].startNode;
-        startNodeRows = node.row;
-        startNodeCols = node.col;
-        return newGrid;
-    };
-
-    const moveEnd = (grid, node) => {
-        if (
-            grid[node.row][node.col].startNode ||
-            grid[node.row][node.col].isWall
-        )
-            return grid;
-        const newGrid = grid.slice();
-        newGrid[endNodeRows][endNodeCols].endNode = false;
-        newGrid[node.row][node.col].endNode =
-            !newGrid[node.row][node.col].endNode;
-        endNodeCols = node.col;
-        endNodeRows = node.row;
-        return newGrid;
-    };
-
-    const handleMouseDown = (evt, grid, node) => {
-        if (visualize) return;
-        evt.preventDefault();
-        if (node.startNode) {
-            setMoveStartNode(true);
-        } else if (node.endNode) {
-            setMoveEndNode(true);
-        } else {
-            let newGrid = createWall(grid, node);
-            setIsMouseDown(true);
-            return newGrid;
-        }
-        setIsMouseDown(true);
-        return null;
-    };
-    const handleMouseEnter = (evt, grid, node) => {
-        if (visualize || !isMouseDown) return;
-        let newGrid = null;
-        if (moveStartNode) {
-            newGrid = moveStart(grid, node);
-        } else if (moveEndNode) {
-            newGrid = moveEnd(grid, node);
-        } else {
-            newGrid = createWall(grid, node);
-        }
-        return newGrid;
-        // if (isMouseDown && !node.startNode && !node.endNode) {
-        //     evt.target.classList.toggle("wall");
-        //     node.isWall = !node.isWall;
-        // }
-    };
-
-    const handleMouseUp = () => {
-        setIsMouseDown(false);
-        setMoveStartNode(false);
-        setMoveEndNode(false);
-    };
-
-    const handleNodeClick = (e, node) => {
-        if (!node.startNode && !node.endNode) {
-            e.target.classList.toggle("wall");
-            node.isWall = !node.isWall;
-        }
     };
 
     useEffect(() => {
         if (!mirrorGrids) {
             setParentGrid([]);
+            setParentStartNodePos({
+                row: 2,
+                col: 10,
+            });
+            setParentEndNodePos({ row: 47, col: 10 });
             return;
         }
-        const newGrid = getInitialGrid();
+        const newGrid = getInitialGrid(50, 20);
         setParentGrid(newGrid);
     }, [mirrorGrids]);
 
@@ -217,40 +177,32 @@ export default function Visualizer() {
             <main>
                 <div className="Grid-container">
                     <Grid
-                        startNodeRows={startNodeRows}
-                        startNodeCols={startNodeCols}
-                        endNodeRows={endNodeRows}
-                        endNodeCols={endNodeCols}
+                        getGrid={getInitialGrid}
                         setIsReady={setGridOneIsReady}
                         gridName="first"
                         clearGrid={clearGrid}
                         clearPath={clearPath}
-                        handleNodeClick={handleNodeClick}
-                        handleMouseUp={handleMouseUp}
-                        handleMouseEnter={handleMouseEnter}
-                        handleMouseDown={handleMouseDown}
                         parentGrid={mirrorGrids ? parentGrid : null}
                         setParentGrid={mirrorGrids ? setParentGrid : null}
-                        isMouseDown={isMouseDown}
+                        startNodeParent={parentStartNodePos}
+                        endNodeParent={parentEndNodePos}
+                        setStartNodeParent={setParentStartNodePos}
+                        setEndNodeParent={setParentEndNodePos}
                     />
                 </div>
                 <div className="Grid-container">
                     <Grid
-                        startNodeRows={startNodeRows}
-                        startNodeCols={startNodeCols}
-                        endNodeRows={endNodeRows}
-                        endNodeCols={endNodeCols}
+                        getGrid={getInitialGrid}
                         setIsReady={setGridTwoIsReady}
                         gridName="second"
                         clearGrid={clearGrid}
                         clearPath={clearPath}
-                        handleNodeClick={handleNodeClick}
-                        handleMouseUp={handleMouseUp}
-                        handleMouseEnter={handleMouseEnter}
-                        handleMouseDown={handleMouseDown}
                         parentGrid={mirrorGrids ? parentGrid : null}
                         setParentGrid={mirrorGrids ? setParentGrid : null}
-                        isMouseDown={isMouseDown}
+                        startNodeParent={parentStartNodePos}
+                        setStartNodeParent={setParentStartNodePos}
+                        setEndNodeParent={setParentEndNodePos}
+                        endNodeParent={parentEndNodePos}
                     />
                 </div>
             </main>
