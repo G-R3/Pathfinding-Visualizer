@@ -1,12 +1,15 @@
 import "../styles/App.css";
 import React from "react";
+import { GridProvider } from "../context/gridContext";
 import Visualizer from "./Visualizer";
 
 function App() {
     return (
-        <div className="App">
-            <Visualizer />
-        </div>
+        <GridProvider>
+            <div className="App">
+                <Visualizer />
+            </div>
+        </GridProvider>
     );
 }
 
