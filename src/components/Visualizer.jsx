@@ -43,6 +43,9 @@ export default function Visualizer() {
                     distance: Infinity,
                     isWall: node.isWall,
                     isVisited: false,
+                    f: Infinity,
+                    g: Infinity,
+                    h: Infinity,
                 };
                 newGrid[node.row][node.col] = newNode;
             }
@@ -116,6 +119,9 @@ export default function Visualizer() {
                     distance: Infinity,
                     isWall: false,
                     isVisited: false,
+                    f: Infinity,
+                    g: Infinity,
+                    h: Infinity,
                 });
             }
             initialGrid.push(gridRow);
