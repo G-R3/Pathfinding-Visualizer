@@ -18,7 +18,7 @@ export default function Visualizer() {
         row: 47,
         col: 10,
     });
-    const { visualize, setGridOneAnimating, setGridTwoAnimating } =
+    const { setGridOneAnimating, setGridTwoAnimating } =
         useContext(GridContext);
 
     const getGridWithoutPath = (
