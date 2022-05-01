@@ -18,13 +18,22 @@ export default function Modal({
                         {/*body*/}
 
                         <div className="Modal-Body">
-                            <p>Total Nodes Visited: {visitedNodesLength}</p>
-                            <p>
-                                Shortest Path Length:{" "}
-                                {shortestPathLength !== 0
-                                    ? shortestPathLength
-                                    : "No path found"}
-                            </p>
+                            <div className="Modal-stat">
+                                <span className="label">Nodes Visited</span>
+                                <span className="stat">
+                                    {visitedNodesLength}
+                                </span>
+                            </div>
+                            <div className="Modal-stat">
+                                <span className="label">
+                                    Shortest Path Length
+                                </span>
+                                <span className="stat">
+                                    {shortestPathLength !== 0
+                                        ? shortestPathLength
+                                        : "No path found"}
+                                </span>
+                            </div>
                         </div>
                         {/*footer*/}
                         <div className="Modal-Footer">
