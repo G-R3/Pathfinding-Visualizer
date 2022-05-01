@@ -1,14 +1,14 @@
 // return all nodes in a single array
-const getAllNodes = (grid) => {
-    let nodes = [];
-    for (let rows of grid) {
-        for (let node of rows) {
-            nodes.push(node);
-        }
-    }
+// const getAllNodes = (grid) => {
+//     let nodes = [];
+//     for (let rows of grid) {
+//         for (let node of rows) {
+//             nodes.push(node);
+//         }
+//     }
 
-    return nodes;
-};
+//     return nodes;
+// };
 
 const sortNodesByDistance = (unvisitedNodes) => {
     unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
