@@ -70,7 +70,6 @@ export const astar = (grid, startNode, endNode) => {
         if (currentNode.distance === Infinity) {
             return closedList;
         }
-
         // if end goal is reached, return explored nodes
         if (currentNode === endNode) {
             return closedList;
@@ -87,11 +86,11 @@ export const astar = (grid, startNode, endNode) => {
 export const getNodesInShortestPathOrderAStar = (finishNode) => {
     const shortestPathOrder = [];
     let currentNode = finishNode.previousNode;
-    while (!currentNode.startNode) {
+    while (currentNode !== null && currentNode.isVisited) {
+        if (currentNode.startNode) break;
         shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
 
-    console.log(shortestPathOrder);
     return shortestPathOrder;
 };

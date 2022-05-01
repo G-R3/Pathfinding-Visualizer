@@ -8,30 +8,20 @@ const getUnvisitedNeighbors = (node, grid) => {
     return neighbors.filter((neighbor) => !neighbor.isVisited);
 };
 
-export const getNodesInShortestPathOrderDFS = (finishNode) => {
-    const shortestPathOrder = [];
-    let currentNode = finishNode;
-    while (currentNode !== null && currentNode.isVisited) {
-        shortestPathOrder.unshift(currentNode);
-        currentNode = currentNode.previousNode;
-    }
-    return shortestPathOrder;
-};
-
 export function dfs(grid, startNode, endNode) {
     const stack = [];
     const visited = [];
     startNode.distance = 0;
     stack.push(startNode);
 
-    while (stack.length) {
+    while (stack.length !== 0) {
         let currentNode = stack.pop();
 
         if (currentNode.isWall) continue;
         // if (currentNode.distance === Infinity) return visited;
         currentNode.isVisited = true;
-        visited.push(currentNode);
         if (currentNode === endNode) return visited;
+        if (!currentNode.startNode) visited.push(currentNode);
 
         let neighbors = getUnvisitedNeighbors(currentNode, grid);
         for (let neighbor of neighbors) {
@@ -41,4 +31,16 @@ export function dfs(grid, startNode, endNode) {
             stack.push(neighbor);
         }
     }
+    return visited;
 }
+
+export const getNodesInShortestPathOrderDFS = (finishNode) => {
+    const shortestPathOrder = [];
+    let currentNode = finishNode.previousNode;
+    while (currentNode !== null && currentNode.isVisited) {
+        if (currentNode.startNode) break;
+        shortestPathOrder.unshift(currentNode);
+        currentNode = currentNode.previousNode;
+    }
+    return shortestPathOrder;
+};

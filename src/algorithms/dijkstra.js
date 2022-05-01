@@ -14,16 +14,20 @@ const sortNodesByDistance = (unvisitedNodes) => {
     unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
 };
 
-// update the distance of the neighbors of the current node and set them to point to the current node
-const updateUnvisitedNeighbors = (node, grid) => {
+// update the distance of the neighbors of the current node and set them to point to the current node (previous node)
+const updateUnvisitedNeighbors = (node, grid, unvisitedNodes) => {
+    // get all neighbors of the node
     const unvisitedNeighbors = getUnvisitedNeighbors(node, grid);
     for (const neighbor of unvisitedNeighbors) {
         neighbor.distance = node.distance + 1;
         neighbor.previousNode = node;
+
+        if (!neighbor.isVisited) unvisitedNodes.push(neighbor);
+        neighbor.isVisited = true;
     }
 };
 
-// return the unvisited neightboads to the left, right, top, and bottom of the current node that have not yet been visisted
+// return the unvisited neightboads to the left, right, top, and bottom of the current node that have not been visisted
 const getUnvisitedNeighbors = (node, grid) => {
     const neighbors = [];
     const { col, row } = node;
@@ -34,28 +38,46 @@ const getUnvisitedNeighbors = (node, grid) => {
     return neighbors.filter((neighbor) => !neighbor.isVisited);
 };
 
-export const getNodesInShortestPathOrder = (finishNode) => {
-    const shortestPathOrder = [];
-    let currentNode = finishNode.previousNode;
-    while (currentNode !== null && currentNode.isVisited) {
-        shortestPathOrder.unshift(currentNode);
-        currentNode = currentNode.previousNode;
-    }
-    return shortestPathOrder;
-};
-
 export const dijkstra = (grid, startNode, endNode) => {
-    const visitedNodesInOrder = [];
+    const visitedNodes = []; // list of nodes visited
+    const unvisitedNodes = []; // list of nodes not visited
     startNode.distance = 0;
-    const unvisitedNodes = getAllNodes(grid);
+    unvisitedNodes.push(startNode);
+
     while (unvisitedNodes.length !== 0) {
+        // sort by distance and find the closest neighbor
         sortNodesByDistance(unvisitedNodes);
         const closestNode = unvisitedNodes.shift();
-        if (closestNode.isWall) continue; // if the current node is a wall, go on to the next node
-        if (closestNode.distance === Infinity) return visitedNodesInOrder; // if no path is found return nodes
-        if (closestNode === endNode) return visitedNodesInOrder; // if the end node is reached
-        closestNode.isVisited = true;
-        if (!closestNode.startNode) visitedNodesInOrder.push(closestNode);
-        updateUnvisitedNeighbors(closestNode, grid);
+
+        // if the current node is a wall, go on to the next node
+        if (closestNode.isWall) continue;
+        // shortest path not found :(
+        if (closestNode.distance === Infinity) {
+            return visitedNodes;
+        }
+        closestNode.isVisited = true; // node was visited
+        // shortest path found :D
+        if (closestNode === endNode) {
+            return visitedNodes;
+        }
+
+        // push node into list of visited nodes
+        if (!closestNode.startNode) visitedNodes.push(closestNode);
+
+        // update the distance and previous nodes of all nieghbors of our current node
+        updateUnvisitedNeighbors(closestNode, grid, unvisitedNodes);
     }
+
+    return visitedNodes;
+};
+
+export const getNodesInShortestPathOrder = (finishNode) => {
+    const shortestPath = [];
+    let currentNode = finishNode.previousNode;
+    while (currentNode !== null && currentNode.isVisited) {
+        if (currentNode.startNode) break;
+        shortestPath.unshift(currentNode);
+        currentNode = currentNode.previousNode;
+    }
+    return shortestPath;
 };
