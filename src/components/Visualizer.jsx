@@ -43,6 +43,7 @@ export default function Visualizer() {
                     distance: Infinity,
                     isWall: node.isWall,
                     isVisited: false,
+                    isShortestPath: false,
                     f: Infinity,
                     g: Infinity,
                     h: Infinity,
@@ -51,6 +52,36 @@ export default function Visualizer() {
             }
         }
         return newGrid;
+    };
+
+    // this is a cursed function. A better way would be to reset properties of the nodes. Those properties would be in charge of adding/removing classes
+    // for example: if node.isShortestPath then we give the class of node-shortest-path
+    // with this method, if we reset the grids, classes are also reset
+    const clearAllGrids = (grid) => {
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[0].length; col++) {
+                let node = document.getElementById(`first-${row}-${col}`);
+                if (
+                    node.className === "node node-shortest-path" ||
+                    node.className === "node node-visited"
+                ) {
+                    document.getElementById(`first-${row}-${col}`).className =
+                        "node";
+                }
+            }
+        }
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[0].length; col++) {
+                let node = document.getElementById(`second-${row}-${col}`);
+                if (
+                    node.className === "node node-shortest-path" ||
+                    node.className === "node node-visited"
+                ) {
+                    document.getElementById(`second-${row}-${col}`).className =
+                        "node";
+                }
+            }
+        }
     };
 
     const clearPath = (
@@ -119,6 +150,7 @@ export default function Visualizer() {
                     distance: Infinity,
                     isWall: false,
                     isVisited: false,
+                    isShortestPath: false,
                     f: Infinity,
                     g: Infinity,
                     h: Infinity,
@@ -138,12 +170,17 @@ export default function Visualizer() {
         endNodeRows,
         endNodeCols,
     ) => {
-        for (let row = 0; row < grid.length; row++) {
-            for (let col = 0; col < grid[row].length; col++) {
-                if (grid[row][col].startNode || grid[row][col].endNode)
-                    continue;
-                document.getElementById(`${gridName}-${row}-${col}`).className =
-                    "node";
+        if (mirrorGrids) {
+            clearAllGrids(grid);
+        } else {
+            for (let row = 0; row < grid.length; row++) {
+                for (let col = 0; col < grid[row].length; col++) {
+                    if (grid[row][col].startNode || grid[row][col].endNode)
+                        continue;
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node";
+                }
             }
         }
 
