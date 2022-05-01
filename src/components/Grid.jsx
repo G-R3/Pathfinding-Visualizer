@@ -82,54 +82,52 @@ export default function Grid({
         visualizeAlgo(algorithm);
     }, [visualize]);
 
-    const animateShortestPath = (nodesInShortestPathOrder) => {
+    const animateShortestPath = (nodesInShortestPathOrder, delay) => {
         return new Promise((resolve, reject) => {
-            let i = 0;
-            let interval = setInterval(() => {
-                if (i < nodesInShortestPathOrder.length) {
-                    const node = nodesInShortestPathOrder[i];
-                    if (!node.startNode && !node.endNode) {
-                        document.getElementById(
-                            `${gridName}-${node.row}-${node.col}`,
-                        ).className = "node node-shortest-path";
-                    }
-                }
-                i++;
-                if (i >= nodesInShortestPathOrder.length) {
-                    clearInterval(interval);
-                    if (!algorithm) {
-                        setIsReady(false);
-                    }
-                    setIsFinished(true);
-                    if (gridName === "first") {
-                        setGridOneAnimating(false);
-                    } else {
-                        setGridTwoAnimating(false);
-                    }
+            for (let j = 0; j <= nodesInShortestPathOrder.length; j++) {
+                const node = nodesInShortestPathOrder[j];
+                const timeout = setTimeout(() => {
+                    document.getElementById(
+                        `${gridName}-${node.row}-${node.col}`,
+                    ).className = "node node-shortest-path";
+                }, (delay + j) * 10);
+
+                if (j >= nodesInShortestPathOrder.length) {
+                    clearTimeout(timeout);
+                    console.log("finished");
+                    setTimeout(() => {
+                        if (!algorithm) {
+                            setIsReady(false);
+                        }
+                        if (gridName === "first") {
+                            setGridOneAnimating(false);
+                        } else {
+                            setGridTwoAnimating(false);
+                        }
+                        setIsFinished(true);
+                    }, (delay + nodesInShortestPathOrder.length + 1) * 10);
+
                     resolve();
                 }
-            }, 20);
+            }
         });
     };
 
     const animate = (visitedNodesInOrder) => {
         return new Promise((resolve, reject) => {
-            let i = 0;
-            let interval = setInterval(() => {
-                if (visitedNodesInOrder && i < visitedNodesInOrder.length) {
-                    const node = visitedNodesInOrder[i];
-                    if (!node.startNode && !node.endNode) {
-                        document.getElementById(
-                            `${gridName}-${node.row}-${node.col}`,
-                        ).className = "node node-visited";
-                    }
-                }
-                i++;
-                if (visitedNodesInOrder && i >= visitedNodesInOrder.length) {
-                    clearInterval(interval);
+            for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+                const node = visitedNodesInOrder[i];
+                const timeout = setTimeout(() => {
+                    document.getElementById(
+                        `${gridName}-${node.row}-${node.col}`,
+                    ).className = "node node-visited";
+                }, i * 10);
+                if (i >= visitedNodesInOrder.length) {
+                    clearTimeout(timeout);
                     resolve();
+                    return;
                 }
-            }, 20);
+            }
         });
     };
 
@@ -143,7 +141,10 @@ export default function Grid({
         totalVisitedNodes = visitedNodesInOrder.length;
         startTime = performance.now();
         await animate(visitedNodesInOrder);
-        await animateShortestPath(nodesInShortestPath);
+        await animateShortestPath(
+            nodesInShortestPath,
+            visitedNodesInOrder.length,
+        );
         endTime = performance.now();
 
         return;
@@ -154,13 +155,15 @@ export default function Grid({
         const endNode = grid[endNodePos.row][endNodePos.col];
         const visitedNodesInOrder = astar(grid, startNode, endNode);
         const nodesInShortestPath = getNodesInShortestPathOrderAStar(endNode);
-
         shortestPathLength = nodesInShortestPath.length;
         totalVisitedNodes = visitedNodesInOrder.length;
 
         startTime = performance.now();
         await animate(visitedNodesInOrder);
-        await animateShortestPath(nodesInShortestPath);
+        await animateShortestPath(
+            nodesInShortestPath,
+            visitedNodesInOrder.length,
+        );
         endTime = performance.now();
 
         return;
@@ -177,7 +180,10 @@ export default function Grid({
 
         startTime = performance.now();
         await animate(visitedNodesInOrder);
-        await animateShortestPath(nodesInShortestPath);
+        await animateShortestPath(
+            nodesInShortestPath,
+            visitedNodesInOrder.length,
+        );
         endTime = performance.now();
 
         return;
@@ -194,7 +200,10 @@ export default function Grid({
 
         startTime = performance.now();
         await animate(visitedNodesInOrder);
-        await animateShortestPath(nodesInShortestPath);
+        await animateShortestPath(
+            nodesInShortestPath,
+            visitedNodesInOrder.length,
+        );
         endTime = performance.now();
 
         return;
@@ -412,7 +421,7 @@ export default function Grid({
                     </button>
                 </div>
             </div>
-            <div className="Grid">
+            <div className={`${gridName}-Grid`}>
                 {isFinished ? (
                     <Modal
                         time={(endTime - startTime).toFixed(4)}
