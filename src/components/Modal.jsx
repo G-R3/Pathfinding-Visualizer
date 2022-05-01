@@ -1,9 +1,8 @@
 import React from "react";
 
 export default function Modal({
-    time,
     shortestPathLength,
-    totalVisitedNodes,
+    visitedNodesLength,
     setIsFinished,
 }) {
     return (
@@ -19,9 +18,13 @@ export default function Modal({
                         {/*body*/}
 
                         <div className="Modal-Body">
-                            <p>Time: {time}</p>
-                            <p>Total Nodes Visited: {totalVisitedNodes}</p>
-                            <p>Shortest Path Length: {shortestPathLength}</p>
+                            <p>Total Nodes Visited: {visitedNodesLength}</p>
+                            <p>
+                                Shortest Path Length:{" "}
+                                {shortestPathLength !== 0
+                                    ? shortestPathLength
+                                    : "No path found"}
+                            </p>
                         </div>
                         {/*footer*/}
                         <div className="Modal-Footer">
