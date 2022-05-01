@@ -62,6 +62,14 @@ export default function Grid({
             endNodePos.row,
             endNodePos.col,
         );
+        clearCurrentPath(
+            grid,
+            gridName,
+            startNodePos.row,
+            startNodePos.col,
+            endNodePos.row,
+            endNodePos.col,
+        );
         setGrid(initialGrid);
     }, [parentGrid]);
 
@@ -213,7 +221,7 @@ export default function Grid({
         }
     };
 
-    // clear walls
+    // clear grid (walls and path of current grid)
     const setNewGrid = (
         grid,
         gridName,
