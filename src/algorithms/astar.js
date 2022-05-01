@@ -1,15 +1,14 @@
-// manhattan heuristics
 function heuristic(node, endNode) {
     // let D = 0;
-    // manhatten
-    //let dx = Math.abs(node.row - endNode.row);
-    //let dy = Math.abs(node.col - endNode.col);
-    // return dx + dy; //Math.sqrt(dx * dx + dy * dy);
+    // manhattan
+    let dx = Math.abs(node.row - endNode.row);
+    let dy = Math.abs(node.col - endNode.col);
+    return dx + dy; //Math.sqrt(dx * dx + dy * dy);
 
-    return Math.sqrt(
-        Math.pow(node.row - endNode.row, 2) +
-            Math.pow(node.col - endNode.col, 2),
-    );
+    // return Math.sqrt(
+    //     Math.pow(node.row - endNode.row, 2) +
+    //         Math.pow(node.col - endNode.col, 2),
+    // );
 }
 
 const updateUnvisitedNeighbors = (currentNode, grid, endNode, openList) => {
