@@ -10,11 +10,6 @@ import { astar, getNodesInShortestPathOrderAStar } from "../algorithms/astar";
 import { bfs, getNodesInShortestPathOrderBFS } from "../algorithms/bfs";
 import { dfs, getNodesInShortestPathOrderDFS } from "../algorithms/dfs";
 
-let startTime = 0;
-let endTime = 0;
-let shortestPathLength = 0;
-let totalVisitedNodes = 0;
-
 export default function Grid({
     getGrid,
     setIsReady,
@@ -35,6 +30,10 @@ export default function Grid({
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [moveStartNode, setMoveStartNode] = useState(false);
     const [moveEndNode, setMoveEndNode] = useState(false);
+    const [stats, setStats] = useState({
+        visitedNodesLength: 0,
+        shortestPathLength: 0,
+    });
 
     const [startNodePos, setStartNodePos] = useState(
         parentGrid ? startNodeParent : { row: 2, col: 10 },
@@ -94,7 +93,6 @@ export default function Grid({
 
                 if (j >= nodesInShortestPathOrder.length) {
                     clearTimeout(timeout);
-                    console.log("finished");
                     setTimeout(() => {
                         if (!algorithm) {
                             setIsReady(false);
@@ -134,57 +132,47 @@ export default function Grid({
     const visualizeDijkstra = async () => {
         const startNode = grid[startNodePos.row][startNodePos.col];
         const endNode = grid[endNodePos.row][endNodePos.col];
-        const visitedNodesInOrder = dijkstra(grid, startNode, endNode);
-        const nodesInShortestPath = getNodesInShortestPathOrder(endNode);
 
-        shortestPathLength = nodesInShortestPath.length;
-        totalVisitedNodes = visitedNodesInOrder.length;
-        startTime = performance.now();
-        await animate(visitedNodesInOrder);
-        await animateShortestPath(
-            nodesInShortestPath,
-            visitedNodesInOrder.length,
-        );
-        endTime = performance.now();
+        const visitedNodes = dijkstra(grid, startNode, endNode);
+        const shortestPath = getNodesInShortestPathOrder(endNode);
 
-        return;
+        await animate(visitedNodes);
+        await animateShortestPath(shortestPath, visitedNodes.length);
+
+        setStats({
+            visitedNodesLength: visitedNodes.length,
+            shortestPathLength: shortestPath.length,
+        });
     };
 
     const visualizeAStar = async () => {
         const startNode = grid[startNodePos.row][startNodePos.col];
         const endNode = grid[endNodePos.row][endNodePos.col];
-        const visitedNodesInOrder = astar(grid, startNode, endNode);
-        const nodesInShortestPath = getNodesInShortestPathOrderAStar(endNode);
-        shortestPathLength = nodesInShortestPath.length;
-        totalVisitedNodes = visitedNodesInOrder.length;
+        const visitedNodes = astar(grid, startNode, endNode);
+        const shortestPath = getNodesInShortestPathOrderAStar(endNode);
 
-        startTime = performance.now();
-        await animate(visitedNodesInOrder);
-        await animateShortestPath(
-            nodesInShortestPath,
-            visitedNodesInOrder.length,
-        );
-        endTime = performance.now();
+        await animate(visitedNodes);
+        await animateShortestPath(shortestPath, visitedNodes.length);
 
-        return;
+        setStats({
+            visitedNodesLength: visitedNodes.length,
+            shortestPathLength: shortestPath.length,
+        });
     };
 
     const visualizeBFS = async () => {
         const startNode = grid[startNodePos.row][startNodePos.col];
         const endNode = grid[endNodePos.row][endNodePos.col];
-        const visitedNodesInOrder = bfs(grid, startNode, endNode);
-        const nodesInShortestPath = getNodesInShortestPathOrderBFS(endNode);
+        const visitedNodes = bfs(grid, startNode, endNode);
+        const shortestPath = getNodesInShortestPathOrderBFS(endNode);
 
-        shortestPathLength = nodesInShortestPath.length;
-        totalVisitedNodes = visitedNodesInOrder.length;
+        await animate(visitedNodes);
+        await animateShortestPath(shortestPath, visitedNodes.length);
 
-        startTime = performance.now();
-        await animate(visitedNodesInOrder);
-        await animateShortestPath(
-            nodesInShortestPath,
-            visitedNodesInOrder.length,
-        );
-        endTime = performance.now();
+        setStats({
+            visitedNodesLength: visitedNodes.length,
+            shortestPathLength: shortestPath.length,
+        });
 
         return;
     };
@@ -192,19 +180,16 @@ export default function Grid({
     const visualizeDFS = async () => {
         const startNode = grid[startNodePos.row][startNodePos.col];
         const endNode = grid[endNodePos.row][endNodePos.col];
-        const visitedNodesInOrder = dfs(grid, startNode, endNode);
-        const nodesInShortestPath = getNodesInShortestPathOrderDFS(endNode);
+        const visitedNodes = dfs(grid, startNode, endNode);
+        const shortestPath = getNodesInShortestPathOrderDFS(endNode);
 
-        shortestPathLength = nodesInShortestPath.length;
-        totalVisitedNodes = visitedNodesInOrder.length;
+        await animate(visitedNodes);
+        await animateShortestPath(shortestPath, visitedNodes.length);
 
-        startTime = performance.now();
-        await animate(visitedNodesInOrder);
-        await animateShortestPath(
-            nodesInShortestPath,
-            visitedNodesInOrder.length,
-        );
-        endTime = performance.now();
+        setStats({
+            visitedNodesLength: visitedNodes.length,
+            shortestPathLength: shortestPath.length,
+        });
 
         return;
     };
@@ -424,9 +409,8 @@ export default function Grid({
             <div className={`${gridName}-Grid`}>
                 {isFinished ? (
                     <Modal
-                        time={(endTime - startTime).toFixed(4)}
-                        shortestPathLength={shortestPathLength}
-                        totalVisitedNodes={totalVisitedNodes}
+                        shortestPathLength={stats.shortestPathLength}
+                        visitedNodesLength={stats.visitedNodesLength}
                         setIsFinished={setIsFinished}
                     />
                 ) : (
