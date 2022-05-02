@@ -208,23 +208,31 @@ main {
     gap: 20px;
 }
 .node {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     outline: 1px solid var(--clr);
     /* display: inline-block; */
     background-color: var(--clr-4);
-}
-@media (max-width: 780px) {
-    .node {
-        width: 15px;
-        height: 15px;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--clr);
 }
 .wall {
     background-color: var(--wall);
     animation: scale 200ms ease;
 }
-
+@keyframes scale {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
 .start-node {
     background-color: var(--green-alt);
 }
@@ -233,10 +241,46 @@ main {
 }
 .node-visited {
     background-color: var(--blue);
+    animation: visited 250ms ease-out;
+}
+@keyframes visited {
+    0% {
+        background-color: #bee3f8;
+    }
+    50% {
+        background-color: #ed64a6;
+        transform: scale(1.2);
+    }
+    75% {
+        background-color: #9f7aea;
+    }
+    100% {
+        background-color: var(--blue);
+        transform: scale(1);
+    }
 }
 .node-shortest-path {
-    background-color: var(--green);
-    animation: scale 200ms ease;
+    background: linear-gradient(
+        -45deg,
+        #9f7aea,
+        var(--green),
+        var(--green),
+        #9f7aea
+    );
+    background-size: 400% 400%;
+    animation: shortest-path 5s ease infinite;
+    /* animation-delay: calc(var(--animation-delay)); */
+}
+@keyframes shortest-path {
+    to {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 .Modal {
     display: flex;
@@ -326,15 +370,4 @@ main {
     padding: 0.75rem 1.5rem;
     margin: 0.25rem;
     cursor: pointer;
-}
-@keyframes scale {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.5);
-    }
-    100% {
-        transform: scale(1);
-    }
 }
