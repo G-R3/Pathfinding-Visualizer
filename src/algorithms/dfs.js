@@ -16,13 +16,17 @@ export function dfs(grid, startNode, endNode) {
 
     while (stack.length !== 0) {
         let currentNode = stack.pop();
-
+        // if the current node is a wall, go on to the next node
         if (currentNode.isWall) continue;
-        // if (currentNode.distance === Infinity) return visited;
-        currentNode.isVisited = true;
-        if (currentNode === endNode) return visited;
-        if (!currentNode.startNode) visited.push(currentNode);
 
+        // push node into list of visited nodes
+        currentNode.isVisited = true;
+        visited.push(currentNode);
+
+        // path was found, return visited nodes
+        if (currentNode === endNode) return visited;
+
+        // update neighbors of our current node
         let neighbors = getUnvisitedNeighbors(currentNode, grid);
         for (let neighbor of neighbors) {
             // neighbor.distance = currentNode.distance + 1;
@@ -31,14 +35,15 @@ export function dfs(grid, startNode, endNode) {
             stack.push(neighbor);
         }
     }
+
+    // no path found return explored nodes
     return visited;
 }
 
 export const getNodesInShortestPathOrderDFS = (finishNode) => {
     const shortestPathOrder = [];
-    let currentNode = finishNode.previousNode;
+    let currentNode = finishNode;
     while (currentNode !== null && currentNode.isVisited) {
-        if (currentNode.startNode) break;
         shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }

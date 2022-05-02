@@ -1,14 +1,14 @@
 function heuristic(node, endNode) {
     // let D = 0;
     // manhattan
-    let dx = Math.abs(node.row - endNode.row);
-    let dy = Math.abs(node.col - endNode.col);
-    return dx + dy; //Math.sqrt(dx * dx + dy * dy);
+    // let dx = Math.abs(node.row - endNode.row);
+    // let dy = Math.abs(node.col - endNode.col);
+    // return dx + dy; //Math.sqrt(dx * dx + dy * dy);
 
-    // return Math.sqrt(
-    //     Math.pow(node.row - endNode.row, 2) +
-    //         Math.pow(node.col - endNode.col, 2),
-    // );
+    return Math.sqrt(
+        Math.pow(node.row - endNode.row, 2) +
+            Math.pow(node.col - endNode.col, 2),
+    );
 }
 
 const updateUnvisitedNeighbors = (currentNode, grid, endNode, openList) => {
@@ -62,33 +62,30 @@ export const astar = (grid, startNode, endNode) => {
         // sort list in order of min to max fscore
         sortList(openList);
         // get the node with the lowest fscore
-        let currentNode = openList.shift();
-        if (currentNode.isWall) continue;
-        // currentNode.closed = true;
-        currentNode.isVisited = true;
+        const currentNode = openList.shift();
 
-        // if no path return the explored nodes
-        if (currentNode.distance === Infinity) {
-            return closedList;
-        }
-        // if end goal is reached, return explored nodes
-        if (currentNode === endNode) {
-            return closedList;
-        }
-        if (!currentNode.startNode) closedList.push(currentNode);
+        // if the current node is a wall, go on to the next node
+        if (currentNode.isWall) continue;
+
+        // push node into list of visited nodes
+        currentNode.isVisited = true;
+        closedList.push(currentNode);
+
+        // path was found, return visited nodes
+        if (currentNode === endNode) return closedList;
 
         // update the neighbors of our current node
         updateUnvisitedNeighbors(currentNode, grid, endNode, openList);
     }
+    // no path found return explored nodes
     return closedList;
 };
 
 // get the nodes in the shortest path
 export const getNodesInShortestPathOrderAStar = (finishNode) => {
     const shortestPathOrder = [];
-    let currentNode = finishNode.previousNode;
+    let currentNode = finishNode;
     while (currentNode !== null && currentNode.isVisited) {
-        if (currentNode.startNode) break;
         shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }

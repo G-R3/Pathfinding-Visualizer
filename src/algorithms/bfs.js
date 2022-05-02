@@ -19,13 +19,10 @@ export const bfs = (grid, startNode, endNode) => {
         const currentNode = list.shift();
         // if the current node is a wall, go on to the next node
         if (currentNode.isWall) continue;
-        // shortest path not found :(
-        if (currentNode.distance === Infinity) return visitedNodesInOrder;
-        // shortest path found :)
-        if (currentNode === endNode) return visitedNodesInOrder;
-
         // push node into list of visited nodes
-        if (!currentNode.startNode) visitedNodesInOrder.push(currentNode);
+        visitedNodesInOrder.push(currentNode);
+        // shortest path found return visited nodes
+        if (currentNode === endNode) return visitedNodesInOrder;
 
         // update neighbors of our current node
         let neighbors = getUnvisitedNeighbors(currentNode, grid);
@@ -38,14 +35,15 @@ export const bfs = (grid, startNode, endNode) => {
             }
         }
     }
+
+    // no path found return explored nodes
     return visitedNodesInOrder;
 };
 
 export const getNodesInShortestPathOrderBFS = (finishNode) => {
     const shortestPathOrder = [];
-    let currentNode = finishNode.previousNode;
+    let currentNode = finishNode;
     while (currentNode !== null && currentNode.isVisited) {
-        if (currentNode.startNode) break;
         shortestPathOrder.unshift(currentNode);
         currentNode = currentNode.previousNode;
     }
