@@ -21,120 +21,21 @@ export default function Visualizer() {
     const { setGridOneAnimating, setGridTwoAnimating } =
         useContext(GridContext);
 
-    const getGridWithoutPath = (
-        grid,
-        startNodeRows,
-        startNodeCols,
-        endNodeRows,
-        endNodeCols,
-    ) => {
-        let newGrid = grid.slice();
-        for (let row of grid) {
-            for (let node of row) {
-                let newNode = {
-                    row: node.row,
-                    col: node.col,
-                    startNode:
-                        node.row === startNodeRows &&
-                        node.col === startNodeCols,
-                    endNode:
-                        node.row === endNodeRows && node.col === endNodeCols,
-                    previousNode: null,
-                    distance: Infinity,
-                    isWall: node.isWall,
-                    isVisited: false,
-                    isShortestPath: false,
-                    f: Infinity,
-                    g: Infinity,
-                    h: Infinity,
-                };
-                newGrid[node.row][node.col] = newNode;
-            }
-        }
-        return newGrid;
-    };
-
-    // this is a cursed function. A better way would be to reset properties of the nodes. Those properties would be in charge of adding/removing classes
-    // for example: if node.isShortestPath then we give the class of node-shortest-path
-    // with this method, if we reset the grids, classes are also reset
-    const clearAllGrids = (grid) => {
-        for (let row = 0; row < grid.length; row++) {
-            for (let col = 0; col < grid[0].length; col++) {
-                let node = document.getElementById(`first-${row}-${col}`);
-                if (
-                    node.className === "node node-shortest-path" ||
-                    node.className === "node node-visited"
-                ) {
-                    document.getElementById(`first-${row}-${col}`).className =
-                        "node";
-                }
-            }
-        }
-        for (let row = 0; row < grid.length; row++) {
-            for (let col = 0; col < grid[0].length; col++) {
-                let node = document.getElementById(`second-${row}-${col}`);
-                if (
-                    node.className === "node node-shortest-path" ||
-                    node.className === "node node-visited"
-                ) {
-                    document.getElementById(`second-${row}-${col}`).className =
-                        "node";
-                }
-            }
-        }
-    };
-
-    const clearPath = (
-        grid,
-        gridName,
-        startNodeRows,
-        startNodeCols,
-        endNodeRows,
-        endNodeCols,
-    ) => {
-        for (let row = 0; row < grid.length; row++) {
-            for (let col = 0; col < grid[0].length; col++) {
-                let node = grid[row][col];
-                if (node.isWall) continue;
-                if (node.startNode) {
-                    document.getElementById(
-                        `${gridName}-${row}-${col}`,
-                    ).className = "node start-node";
-                } else if (node.endNode) {
-                    document.getElementById(
-                        `${gridName}-${row}-${col}`,
-                    ).className = "node end-node";
-                } else {
-                    document.getElementById(
-                        `${gridName}-${row}-${col}`,
-                    ).className = "node";
-                }
-            }
-        }
-        const newGrid = getGridWithoutPath(
-            grid,
-            startNodeRows,
-            startNodeCols,
-            endNodeRows,
-            endNodeCols,
-        );
-        return newGrid;
-    };
-
-    const handleClick = () => {
-        if (!gridOneIsReady || !gridTwoIsReady) {
-            console.log("Choose Algorithms");
-            setError(true);
+    useEffect(() => {
+        if (!mirrorGrids) {
+            setParentGrid([]);
+            setParentStartNodePos({
+                row: 2,
+                col: 10,
+            });
+            setParentEndNodePos({ row: 47, col: 10 });
             return;
         }
+        const newGrid = getGrid(50, 20);
+        setParentGrid(newGrid);
+    }, [mirrorGrids]);
 
-        setError(false);
-        setGridOneAnimating(true);
-        setGridTwoAnimating(true);
-        return;
-    };
-
-    const getInitialGrid = (
+    const getGrid = (
         numRows = 50,
         numCols = 20,
         startNodeRows = 2,
@@ -168,6 +69,112 @@ export default function Visualizer() {
         return initialGrid;
     };
 
+    const getGridWithoutPath = (
+        grid,
+        startNodeRows,
+        startNodeCols,
+        endNodeRows,
+        endNodeCols,
+    ) => {
+        let newGrid = grid.slice();
+        for (let row of grid) {
+            for (let node of row) {
+                let newNode = {
+                    row: node.row,
+                    col: node.col,
+                    startNode:
+                        node.row === startNodeRows &&
+                        node.col === startNodeCols,
+                    endNode:
+                        node.row === endNodeRows && node.col === endNodeCols,
+                    previousNode: null,
+                    distance: Infinity,
+                    isWall: node.isWall,
+                    isVisited: false,
+                    isShortestPath: false,
+                    f: Infinity,
+                    g: Infinity,
+                    h: Infinity,
+                };
+                newGrid[node.row][node.col] = newNode;
+            }
+        }
+        return newGrid;
+    };
+
+    const clearPath = (
+        grid,
+        gridName,
+        startNodeRows,
+        startNodeCols,
+        endNodeRows,
+        endNodeCols,
+    ) => {
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[row].length; col++) {
+                let node = grid[row][col];
+                if (node.isWall) continue;
+                if (node.startNode) {
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node start-node";
+                } else if (node.endNode) {
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node end-node";
+                } else {
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node";
+                }
+            }
+        }
+        const newGrid = getGridWithoutPath(
+            grid,
+            startNodeRows,
+            startNodeCols,
+            endNodeRows,
+            endNodeCols,
+        );
+        return newGrid;
+    };
+
+    // this is a cursed function. A better way would be to reset properties of the nodes. Those properties would be in charge of adding/removing classes
+    // for example: if node.isShortestPath then we give the class of node-shortest-path
+    // with this method, if we reset the grids, classes are also reset
+    const clearAllGrids = (grid) => {
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[row].length; col++) {
+                let node = grid[row][col];
+                if (node.startNode)
+                    document.getElementById(`first-${row}-${col}`).className =
+                        "node start-node";
+                else if (node.endNode) {
+                    document.getElementById(`first-${row}-${col}`).className =
+                        "node end-node";
+                } else {
+                    document.getElementById(`first-${row}-${col}`).className =
+                        "node";
+                }
+            }
+        }
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[row].length; col++) {
+                let node = grid[row][col];
+                if (node.startNode)
+                    document.getElementById(`second-${row}-${col}`).className =
+                        "node start-node";
+                else if (node.endNode) {
+                    document.getElementById(`second-${row}-${col}`).className =
+                        "node end-node";
+                } else {
+                    document.getElementById(`second-${row}-${col}`).className =
+                        "node";
+                }
+            }
+        }
+    };
+
     const clearGrid = (
         grid,
         gridName,
@@ -199,7 +206,7 @@ export default function Visualizer() {
             }
         }
 
-        let newGrid = getInitialGrid(
+        let newGrid = getGrid(
             50,
             20,
             startNodeRows,
@@ -207,22 +214,22 @@ export default function Visualizer() {
             endNodeRows,
             endNodeCols,
         );
+
         return newGrid;
     };
 
-    useEffect(() => {
-        if (!mirrorGrids) {
-            setParentGrid([]);
-            setParentStartNodePos({
-                row: 2,
-                col: 10,
-            });
-            setParentEndNodePos({ row: 47, col: 10 });
+    const handleClick = () => {
+        if (!gridOneIsReady || !gridTwoIsReady) {
+            console.log("Choose Algorithms");
+            setError(true);
             return;
         }
-        const newGrid = getInitialGrid(50, 20);
-        setParentGrid(newGrid);
-    }, [mirrorGrids]);
+
+        setError(false);
+        setGridOneAnimating(true);
+        setGridTwoAnimating(true);
+        return;
+    };
 
     return (
         <div>
@@ -235,7 +242,7 @@ export default function Visualizer() {
             <main>
                 <div className="Grid-container">
                     <Grid
-                        getGrid={getInitialGrid}
+                        getGrid={getGrid}
                         setIsReady={setGridOneIsReady}
                         gridName="first"
                         clearGrid={clearGrid}
@@ -250,7 +257,7 @@ export default function Visualizer() {
                 </div>
                 <div className="Grid-container">
                     <Grid
-                        getGrid={getInitialGrid}
+                        getGrid={getGrid}
                         setIsReady={setGridTwoIsReady}
                         gridName="second"
                         clearGrid={clearGrid}
