@@ -415,14 +415,12 @@ export default function Grid({
                 </div>
             </div>
             <div className={`${gridName}-Grid`}>
-                {isFinished ? (
+                {isFinished && (
                     <Modal
                         shortestPathLength={stats.shortestPathLength}
                         visitedNodesLength={stats.visitedNodesLength}
                         setIsFinished={setIsFinished}
                     />
-                ) : (
-                    ""
                 )}
                 {grid.map((row, i) => {
                     return (
