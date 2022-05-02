@@ -94,11 +94,17 @@ export default function Visualizer() {
     ) => {
         for (let row = 0; row < grid.length; row++) {
             for (let col = 0; col < grid[0].length; col++) {
-                let node = document.getElementById(`${gridName}-${row}-${col}`);
-                if (
-                    node.className === "node node-shortest-path" ||
-                    node.className === "node node-visited"
-                ) {
+                let node = grid[row][col];
+                if (node.isWall) continue;
+                if (node.startNode) {
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node start-node";
+                } else if (node.endNode) {
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node end-node";
+                } else {
                     document.getElementById(
                         `${gridName}-${row}-${col}`,
                     ).className = "node";
@@ -175,11 +181,20 @@ export default function Visualizer() {
         } else {
             for (let row = 0; row < grid.length; row++) {
                 for (let col = 0; col < grid[row].length; col++) {
-                    if (grid[row][col].startNode || grid[row][col].endNode)
-                        continue;
-                    document.getElementById(
-                        `${gridName}-${row}-${col}`,
-                    ).className = "node";
+                    let node = grid[row][col];
+                    if (node.startNode)
+                        document.getElementById(
+                            `${gridName}-${row}-${col}`,
+                        ).className = "node start-node";
+                    else if (node.endNode) {
+                        document.getElementById(
+                            `${gridName}-${row}-${col}`,
+                        ).className = "node end-node";
+                    } else {
+                        document.getElementById(
+                            `${gridName}-${row}-${col}`,
+                        ).className = "node";
+                    }
                 }
             }
         }
