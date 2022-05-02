@@ -1,4 +1,5 @@
 import React from "react";
+import { FaFlagCheckered, FaMapMarkerAlt } from "react-icons/fa";
 
 export default function Node({
     mouseDown,
@@ -22,6 +23,14 @@ export default function Node({
             onMouseDown={(evt) => mouseDown(evt, node)}
             onMouseEnter={(evt) => mouseEnter(evt, node)}
             onMouseUp={mouseUp}
-        ></div>
+        >
+            {node.endNode ? (
+                <FaFlagCheckered />
+            ) : node.startNode ? (
+                <FaMapMarkerAlt />
+            ) : (
+                ""
+            )}
+        </div>
     );
 }
