@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
 import { GridContext } from "../context/gridContext";
-import { FaPlay } from "react-icons/fa";
+import { FaPlay, FaRegClone } from "react-icons/fa";
 import { FiAlertTriangle } from "react-icons/fi";
-import { FaRegClone } from "react-icons/fa";
 import { GiPathDistance } from "react-icons/gi";
 
 export default function Navbar({
