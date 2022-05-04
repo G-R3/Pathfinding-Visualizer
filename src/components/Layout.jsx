@@ -1,14 +1,13 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
+import "../styles/Layout.css";
 
 export default function Layout() {
     return (
-        <div className="App">
+        <>
             <div className="header">
-                <div className="logo">
-                    Path <br /> Visualizer
-                </div>
-                <ul>
+                <div className="logo">Path Visualizer</div>
+                <ul className="header-nav">
                     <li className="link">
                         <Link to="/">Main</Link>
                     </li>
@@ -21,6 +20,6 @@ export default function Layout() {
                 </ul>
             </div>
             <Outlet />
-        </div>
+        </>
     );
 }

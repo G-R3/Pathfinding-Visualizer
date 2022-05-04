@@ -1,0 +1,27 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    margin: 0 auto;
+    max-width: 2050px;
+}
+
+.header .logo {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.header-nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    list-style: none;
+}
+
+.header-nav .link a {
+    color: var(--clr-3);
+    text-decoration: none;
+    font-size: 1.2rem;
+}
