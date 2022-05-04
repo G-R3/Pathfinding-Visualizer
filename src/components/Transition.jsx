@@ -11,11 +11,7 @@ function Transition({ timeline }) {
             ease: Power4.easeOut,
         });
     });
-    return (
-        <div>
-            <div className="transition-effect" ref={trans}></div>
-        </div>
-    );
+    return <div className="transition-effect" ref={trans}></div>;
 }
 
 export default Transition;
