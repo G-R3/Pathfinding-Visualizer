@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import "../components/Algo.css";
+import "../styles/Algo.css";
 import gsap from "gsap";
 import Transition from "../components/Transition";
 

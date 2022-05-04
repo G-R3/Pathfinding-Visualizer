@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import "../components/main.css";
+import "../styles/Home.css";
 import Transition from "../components/Transition";
 import { gsap } from "gsap";
 
