@@ -1,14 +1,20 @@
 import "../styles/App.css";
 import React from "react";
+import { Routes, Route } from "react-router-dom";
 import { GridProvider } from "../context/gridContext";
-import Visualizer from "./Visualizer";
+import Layout from "./Layout";
+import { Home, Algo, Visualizer } from "../Pages";
 
 function App() {
     return (
         <GridProvider>
-            <div className="App">
-                <Visualizer />
-            </div>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path="/algo" element={<Algo />} />
+                    <Route path="/visualizer" element={<Visualizer />} />
+                </Route>
+            </Routes>
         </GridProvider>
     );
 }
