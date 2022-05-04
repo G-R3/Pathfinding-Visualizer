@@ -5,8 +5,8 @@
     position: relative;
 }
 .container-algo h1 {
-    font-family: "Monument";
-    color: white;
+    color: var(--clr-3);
+    text-shadow: -5px 2px 15px rgba(0, 0, 0, 0.5);
     font-size: 100px;
     text-transform: uppercase;
     position: absolute;
