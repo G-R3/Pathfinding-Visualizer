@@ -424,7 +424,7 @@ export default function Grid({
                 )}
                 {grid.map((row, i) => {
                     return (
-                        <div key={i}>
+                        <div key={i} className="row">
                             {row.map((node, i) => {
                                 return (
                                     <Node

@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { GridContext } from "../context/gridContext";
 import { FaPlay, FaRegClone } from "react-icons/fa";
 import { FiAlertTriangle } from "react-icons/fi";
-import { GiPathDistance } from "react-icons/gi";
 
 export default function Navbar({
     handleClick,
@@ -14,11 +13,6 @@ export default function Navbar({
 
     return (
         <nav className="navbar">
-            <h1 className="nav-title">
-                Visualizer
-                <GiPathDistance size={30} />
-            </h1>
-
             <div className="navbar-container">
                 {error && (
                     <div className="error-msg">

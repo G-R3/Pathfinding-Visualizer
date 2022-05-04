@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { GridContext } from "../context/gridContext";
-import Navbar from "./Navbar";
-import Grid from "./Grid";
+import Navbar from "../components/Navbar";
+import Grid from "../components/Grid";
 
 export default function Visualizer() {
     const [error, setError] = useState(false);
