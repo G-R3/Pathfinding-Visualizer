@@ -1,12 +1,16 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
+import { GiPathDistance } from "react-icons/gi";
 import "../styles/Layout.css";
 
 export default function Layout() {
     return (
         <>
             <div className="header">
-                <div className="logo">Path Visualizer</div>
+                <h1 className="header-title">
+                    <GiPathDistance size={40} className="header-logo" />
+                    Visualizer
+                </h1>
                 <ul className="header-nav">
                     <li className="link">
                         <Link to="/">Main</Link>
