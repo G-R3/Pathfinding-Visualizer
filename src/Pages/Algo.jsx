@@ -24,8 +24,8 @@ function Algo() {
     return (
         <div>
             <Transition timeline={algo} />
-            <div className="algo-image algo-overlay"></div>
             <div className="container-algo">
+                <div className="algo-image algo-overlay"></div>
                 <h1 ref={algoh1}>Algorithm Page</h1>
             </div>
         </div>
