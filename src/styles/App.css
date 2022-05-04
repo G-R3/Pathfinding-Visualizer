@@ -24,6 +24,7 @@ body {
     min-height: 100%;
     background-color: var(--clr);
     color: var(--clr-3);
+    overflow-x: hidden;
 }
 .navbar {
     display: flex;
