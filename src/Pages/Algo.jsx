@@ -19,13 +19,13 @@ function Algo() {
             { duration: 0.5, y: -200, opacity: 0 },
             "-=3",
         );
-    });
+    }, [algo]);
 
     return (
         <div>
             <Transition timeline={algo} />
             <div className="container-algo">
-                <div className="algo-image algo-overlay"></div>
+                <div className="algo-image algo-overlay" ref={algoimg}></div>
                 <h1 ref={algoh1}>Algorithm Page</h1>
             </div>
         </div>

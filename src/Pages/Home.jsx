@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import "../styles/Home.css";
 import Transition from "../components/Transition";
 import { gsap } from "gsap";
+
 export default function Main() {
     const main = gsap.timeline();
     const mainh1 = useRef(null);
