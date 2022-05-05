@@ -42,7 +42,7 @@ function getNeighbors(grid, node) {
     return neighbors.filter((neighbor) => !neighbor.isVisited);
 }
 
-const sortList = (openList) => {
+const sortByFScore = (openList) => {
     openList.sort((nodeA, nodeB) => nodeA.f - nodeB.f);
 };
 
@@ -60,7 +60,7 @@ export const astar = (grid, startNode, endNode) => {
 
     while (openList.length !== 0) {
         // sort list in order of min to max fscore
-        sortList(openList);
+        sortByFScore(openList);
         // get the node with the lowest fscore
         const currentNode = openList.shift();
 
