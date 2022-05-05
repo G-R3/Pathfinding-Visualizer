@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Node from "./Node";
 import { GridContext } from "../context/gridContext";
 import { AiOutlineClear } from "react-icons/ai";
@@ -23,7 +23,7 @@ export default function Grid({
     setStartNodeParent,
     setEndNodeParent,
 }) {
-    // const [isMouseDown, setIsMouseDown] = useState(false);
+    const timers = useRef(new Map());
     const [algorithm, setAlgorithm] = useState("");
     const [grid, setGrid] = useState([]);
     const [isFinished, setIsFinished] = useState(false);
@@ -52,8 +52,6 @@ export default function Grid({
             setGrid(parentGrid);
             return;
         }
-        // this is hardcoded based on the values of the CSS height & weight properties of the Grid class.
-        // const initialGrid = getInitialGrid(720 / 20, 600 / 20);
         const initialGrid = getGrid(
             50,
             20,
@@ -89,18 +87,48 @@ export default function Grid({
         visualizeAlgo(algorithm);
     }, [visualize]);
 
+    useEffect(() => {
+        const initialGrid = getGrid(
+            50,
+            20,
+            startNodePos.row,
+            startNodePos.col,
+            endNodePos.row,
+            endNodePos.col,
+        );
+        setGrid(initialGrid);
+        setGridOneAnimating(false);
+        setGridTwoAnimating(false);
+        return () => {
+            console.log(timers);
+            console.log("clearing timeouts");
+            [...timers.current.values()].forEach((timer) => {
+                clearTimeout(timer);
+            });
+        };
+    }, []);
+
     const animateShortestPath = (nodesInShortestPathOrder, delay) => {
         return new Promise((resolve, reject) => {
             for (let j = 0; j <= nodesInShortestPathOrder.length; j++) {
                 const node = nodesInShortestPathOrder[j];
-                const timeout = setTimeout(() => {
-                    document.getElementById(
+                const timeout2 = setTimeout(() => {
+                    const nodeElem = document.getElementById(
                         `${gridName}-${node.row}-${node.col}`,
-                    ).className = "node node-shortest-path";
+                    );
+
+                    // ????
+                    if (!nodeElem) {
+                        return;
+                    }
+
+                    nodeElem.className = "node node-shortest-path";
                 }, (delay + j) * 10);
 
+                timers.current.set(timeout2, timeout2);
+
                 if (j >= nodesInShortestPathOrder.length) {
-                    clearTimeout(timeout);
+                    clearTimeout(timeout2);
                     setTimeout(() => {
                         if (!algorithm) {
                             setIsReady(false);
@@ -123,13 +151,24 @@ export default function Grid({
         return new Promise((resolve, reject) => {
             for (let i = 0; i <= visitedNodesInOrder.length; i++) {
                 const node = visitedNodesInOrder[i];
-                const timeout = setTimeout(() => {
-                    document.getElementById(
+
+                const timeout1 = setTimeout(() => {
+                    const nodeElem = document.getElementById(
                         `${gridName}-${node.row}-${node.col}`,
-                    ).className = "node node-visited";
+                    );
+
+                    // ????
+                    if (!nodeElem) {
+                        return;
+                    }
+
+                    nodeElem.className = "node node-visited";
                 }, i * 10);
+
+                timers.current.set(timeout1, timeout1);
+
                 if (i >= visitedNodesInOrder.length) {
-                    clearTimeout(timeout);
+                    clearTimeout(timeout1);
                     resolve();
                     return;
                 }
