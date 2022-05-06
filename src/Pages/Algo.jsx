@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import "../styles/Algo.css";
+import { Link, Outlet } from "react-router-dom";
 import gsap from "gsap";
 import Transition from "../components/Transition";
+import "../styles/Algo.css";
 
 function Algo() {
     const algo = gsap.timeline();
@@ -24,9 +25,30 @@ function Algo() {
     return (
         <div>
             <Transition timeline={algo} />
-            <div className="container-algo">
-                <div className="algo-image algo-overlay" ref={algoimg}></div>
-                <h1 ref={algoh1}>Algorithm Page</h1>
+            <div className="container">
+                {/* <div className="algo-image algo-overlay" ref={algoimg}></div>
+                <h1 ref={algoh1}>Algorithm Page</h1> */}
+                <div className="links">
+                    <Link to="/algo/BFSPage" className="page-link">
+                        {" "}
+                        Breadth First Search Algorithm{" "}
+                    </Link>
+                    <span> / </span>
+                    <Link to="/algo/DFSPage" className="page-link">
+                        Depth First Search Algorithm
+                    </Link>
+                    <span> / </span>
+                    <Link to="/algo/" className="page-link">
+                        {" "}
+                        Dijkstra's Algorithm{" "}
+                    </Link>
+                    <span> / </span>
+                    <Link to="/algo/AstarPage" className="page-link">
+                        {" "}
+                        A* Algorithm{" "}
+                    </Link>
+                </div>
+                <Outlet />
             </div>
         </div>
     );
