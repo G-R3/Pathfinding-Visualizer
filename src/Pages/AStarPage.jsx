@@ -6,7 +6,7 @@ function AStarPage() {
         <>
             <div className="video-container">
                 <ReactPlayer
-                    url="https://www.youtube.com/embed/oDqjPvD54Ss"
+                    url="https://www.youtube.com/embed/ySN5Wnu88nE"
                     className="video"
                 />
             </div>
