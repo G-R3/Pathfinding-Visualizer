@@ -1,9 +1,3 @@
-.container-algo {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
-}
 .container-algo h1 {
     color: var(--clr-3);
     text-shadow: -5px 2px 15px rgba(0, 0, 0, 0.5);
@@ -24,4 +18,57 @@
 .algo-overlay {
     background: url("../images/finalpath.jpg") 50% 50% no-repeat;
     background-size: cover;
+}
+.links {
+    margin: 2rem 0;
+}
+.page-link {
+    color: var(--clr-3);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.5rem 0.8rem;
+    border-radius: var(--border-radius);
+    transition: all 300ms ease;
+}
+.page-link:hover,
+.page-link:focus {
+    background-color: hsla(0, 0%, 25%, 0.45);
+    outline: none;
+}
+
+.video-container {
+    display: flex;
+    justify-content: center;
+}
+.Grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 550px));
+    justify-content: space-evenly;
+    grid-gap: 2rem;
+    max-width: 1200px;
+    margin: 2.5rem auto;
+    padding-bottom: 2rem;
+}
+.Grid-layout .item {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.Grid-layout .item h1 {
+    text-align: center;
+}
+.algo-section {
+    display: flex;
+    flex-direction: column;
+}
+li {
+    list-style-position: inside;
+}
+.list-padded {
+    margin-left: 2rem;
+    margin-top: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
