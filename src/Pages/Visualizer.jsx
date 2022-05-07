@@ -5,7 +5,6 @@ import Grid from "../components/Grid";
 
 export default function Visualizer() {
     const [error, setError] = useState(false);
-    // idk how I feel about doing it this way. There is probably some better way but for now this works
     const [gridOneIsReady, setGridOneIsReady] = useState(false);
     const [gridTwoIsReady, setGridTwoIsReady] = useState(false);
     const [mirrorGrids, setMirrorGrids] = useState(false);
@@ -138,10 +137,12 @@ export default function Visualizer() {
         );
         return newGrid;
     };
-
-    // this is a cursed function. A better way would be to reset properties of the nodes. Those properties would be in charge of adding/removing classes
-    // for example: if node.isShortestPath then we give the class of node-shortest-path
-    // with this method, if we reset the grids, classes are also reset
+    /**
+     *  this is a cursed function. A better way would be to reset properties of the nodes. Those properties would be in charge of adding/removing classes
+     * for example: if node.isShortestPath then we give the class of node-shortest-path
+     * with this method, if we reset the grids, classes are also reset
+     *
+     */
     const clearAllGrids = (grid) => {
         for (let row = 0; row < grid.length; row++) {
             for (let col = 0; col < grid[row].length; col++) {
@@ -206,7 +207,7 @@ export default function Visualizer() {
             }
         }
 
-        let newGrid = getGrid(
+        const newGrid = getGrid(
             50,
             20,
             startNodeRows,
@@ -218,7 +219,7 @@ export default function Visualizer() {
         return newGrid;
     };
 
-    const handleClick = () => {
+    const visualize = () => {
         if (!gridOneIsReady || !gridTwoIsReady) {
             console.log("Choose Algorithms");
             setError(true);
@@ -234,7 +235,7 @@ export default function Visualizer() {
     return (
         <div>
             <Navbar
-                handleClick={handleClick}
+                handleClick={visualize}
                 error={error}
                 setMirrorGrids={setMirrorGrids}
                 mirroredGrids={mirrorGrids}
