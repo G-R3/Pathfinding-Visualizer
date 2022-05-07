@@ -20,8 +20,8 @@ export default function Node({
         <div
             className={`node ${classes}`}
             id={id}
-            onMouseDown={(evt) => mouseDown(evt, node)}
-            onMouseEnter={(evt) => mouseEnter(evt, node)}
+            onMouseDown={() => mouseDown(node)}
+            onMouseEnter={() => mouseEnter(node)}
             onMouseUp={mouseUp}
         >
             {node.endNode ? (
