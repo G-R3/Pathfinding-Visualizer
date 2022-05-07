@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Node from "./Node";
 import { GridContext } from "../context/gridContext";
@@ -28,8 +29,8 @@ export default function Grid({
     const [grid, setGrid] = useState([]);
     const [isFinished, setIsFinished] = useState(false);
     const [isMouseDown, setIsMouseDown] = useState(false);
-    const [moveStartNode, setMoveStartNode] = useState(false);
-    const [moveEndNode, setMoveEndNode] = useState(false);
+    const [isMovingStartNode, setIsMovingStartNode] = useState(false);
+    const [isMovingEndNode, setIsMovingEndNode] = useState(false);
     const [stats, setStats] = useState({
         visitedNodesLength: 0,
         shortestPathLength: 0,
@@ -100,8 +101,6 @@ export default function Grid({
         setGridOneAnimating(false);
         setGridTwoAnimating(false);
         return () => {
-            console.log(timers);
-            console.log("clearing timeouts");
             [...timers.current.values()].forEach((timer) => {
                 clearTimeout(timer);
             });
@@ -142,6 +141,7 @@ export default function Grid({
                     }, (delay + nodesInShortestPathOrder.length + 1) * 10);
 
                     resolve();
+                    return;
                 }
             }
         });
@@ -260,8 +260,7 @@ export default function Grid({
         }
     };
 
-    // clear grid (walls and path of current grid)
-    const setNewGrid = (
+    const clearCurrentGrid = (
         grid,
         gridName,
         startNodeRow,
@@ -284,7 +283,6 @@ export default function Grid({
         setGrid(newGrid);
     };
 
-    // clear path
     const clearCurrentPath = (
         grid,
         gridName,
@@ -320,7 +318,7 @@ export default function Grid({
         return newGrid;
     };
 
-    const moveStart = (grid, node) => {
+    const moveStartNode = (grid, node) => {
         if (grid[node.row][node.col].endNode || grid[node.row][node.col].isWall)
             return grid;
         const newGrid = grid.slice();
@@ -340,7 +338,7 @@ export default function Grid({
         return newGrid;
     };
 
-    const moveEnd = (grid, node) => {
+    const moveEndNode = (grid, node) => {
         if (
             grid[node.row][node.col].startNode ||
             grid[node.row][node.col].isWall
@@ -363,15 +361,15 @@ export default function Grid({
         return newGrid;
     };
 
-    const handleMouseDown = (evt, node) => {
+    const handleMouseDown = (node) => {
         if (visualize) return;
-        evt.preventDefault();
+
         if (node.startNode) {
-            setMoveStartNode(true);
+            setIsMovingStartNode(true);
         } else if (node.endNode) {
-            setMoveEndNode(true);
+            setIsMovingEndNode(true);
         } else {
-            let newGrid = createWall(grid, node);
+            const newGrid = createWall(grid, node);
             setIsMouseDown(true);
             if (parentGrid) {
                 setParentGrid(newGrid);
@@ -382,13 +380,13 @@ export default function Grid({
         setIsMouseDown(true);
         return null;
     };
-    const handleMouseEnter = (evt, node) => {
+    const handleMouseEnter = (node) => {
         if (visualize || !isMouseDown) return;
         let newGrid = null;
-        if (moveStartNode) {
-            newGrid = moveStart(grid, node);
-        } else if (moveEndNode) {
-            newGrid = moveEnd(grid, node);
+        if (isMovingStartNode) {
+            newGrid = moveStartNode(grid, node);
+        } else if (isMovingEndNode) {
+            newGrid = moveEndNode(grid, node);
         } else {
             newGrid = createWall(grid, node);
         }
@@ -403,8 +401,8 @@ export default function Grid({
 
     const handleMouseUp = () => {
         setIsMouseDown(false);
-        setMoveStartNode(false);
-        setMoveEndNode(false);
+        setIsMovingStartNode(false);
+        setIsMovingEndNode(false);
     };
 
     return (
@@ -420,7 +418,7 @@ export default function Grid({
                     <button
                         className="btn clearpath-button"
                         onClick={() =>
-                            setNewGrid(
+                            clearCurrentGrid(
                                 grid,
                                 gridName,
                                 startNodePos.row,
