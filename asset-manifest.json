@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Pathfinding-Visualizer/static/css/main.a3c9edb0.css",
-    "main.js": "/Pathfinding-Visualizer/static/js/main.236455b3.js",
+    "main.js": "/Pathfinding-Visualizer/static/js/main.45bf6b29.js",
     "static/media/chess.jpg": "/Pathfinding-Visualizer/static/media/chess.ae9a6bb02d7a8b9e9a03.jpg",
     "static/media/finalpath.jpg": "/Pathfinding-Visualizer/static/media/finalpath.a8d62abbc31f7e66f986.jpg",
     "index.html": "/Pathfinding-Visualizer/index.html",
     "main.a3c9edb0.css.map": "/Pathfinding-Visualizer/static/css/main.a3c9edb0.css.map",
-    "main.236455b3.js.map": "/Pathfinding-Visualizer/static/js/main.236455b3.js.map"
+    "main.45bf6b29.js.map": "/Pathfinding-Visualizer/static/js/main.45bf6b29.js.map"
   },
   "entrypoints": [
     "static/css/main.a3c9edb0.css",
-    "static/js/main.236455b3.js"
+    "static/js/main.45bf6b29.js"
   ]
 }
