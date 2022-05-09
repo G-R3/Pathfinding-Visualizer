@@ -56,7 +56,6 @@ export default function Visualizer() {
                     distance: Infinity,
                     isWall: false,
                     isVisited: false,
-                    isShortestPath: false,
                     f: Infinity,
                     g: Infinity,
                     h: Infinity,
@@ -90,7 +89,6 @@ export default function Visualizer() {
                     distance: Infinity,
                     isWall: node.isWall,
                     isVisited: false,
-                    isShortestPath: false,
                     f: Infinity,
                     g: Infinity,
                     h: Infinity,
@@ -137,44 +135,6 @@ export default function Visualizer() {
         );
         return newGrid;
     };
-    /**
-     *  this is a cursed function. A better way would be to reset properties of the nodes. Those properties would be in charge of adding/removing classes
-     * for example: if node.isShortestPath then we give the class of node-shortest-path
-     * with this method, if we reset the grids, classes are also reset
-     *
-     */
-    const clearAllGrids = (grid) => {
-        for (let row = 0; row < grid.length; row++) {
-            for (let col = 0; col < grid[row].length; col++) {
-                let node = grid[row][col];
-                if (node.startNode)
-                    document.getElementById(`first-${row}-${col}`).className =
-                        "node start-node";
-                else if (node.endNode) {
-                    document.getElementById(`first-${row}-${col}`).className =
-                        "node end-node";
-                } else {
-                    document.getElementById(`first-${row}-${col}`).className =
-                        "node";
-                }
-            }
-        }
-        for (let row = 0; row < grid.length; row++) {
-            for (let col = 0; col < grid[row].length; col++) {
-                let node = grid[row][col];
-                if (node.startNode)
-                    document.getElementById(`second-${row}-${col}`).className =
-                        "node start-node";
-                else if (node.endNode) {
-                    document.getElementById(`second-${row}-${col}`).className =
-                        "node end-node";
-                } else {
-                    document.getElementById(`second-${row}-${col}`).className =
-                        "node";
-                }
-            }
-        }
-    };
 
     const clearGrid = (
         grid,
@@ -184,25 +144,21 @@ export default function Visualizer() {
         endNodeRows,
         endNodeCols,
     ) => {
-        if (mirrorGrids) {
-            clearAllGrids(grid);
-        } else {
-            for (let row = 0; row < grid.length; row++) {
-                for (let col = 0; col < grid[row].length; col++) {
-                    let node = grid[row][col];
-                    if (node.startNode)
-                        document.getElementById(
-                            `${gridName}-${row}-${col}`,
-                        ).className = "node start-node";
-                    else if (node.endNode) {
-                        document.getElementById(
-                            `${gridName}-${row}-${col}`,
-                        ).className = "node end-node";
-                    } else {
-                        document.getElementById(
-                            `${gridName}-${row}-${col}`,
-                        ).className = "node";
-                    }
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[row].length; col++) {
+                let node = grid[row][col];
+                if (node.startNode)
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node start-node";
+                else if (node.endNode) {
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node end-node";
+                } else {
+                    document.getElementById(
+                        `${gridName}-${row}-${col}`,
+                    ).className = "node";
                 }
             }
         }
@@ -229,7 +185,6 @@ export default function Visualizer() {
         setError(false);
         setGridOneAnimating(true);
         setGridTwoAnimating(true);
-        return;
     };
 
     return (
