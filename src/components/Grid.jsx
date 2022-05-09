@@ -108,83 +108,77 @@ export default function Grid({
     }, []);
 
     const animateShortestPath = (nodesInShortestPathOrder, delay) => {
-        return new Promise((resolve, reject) => {
-            for (let j = 0; j <= nodesInShortestPathOrder.length; j++) {
-                const node = nodesInShortestPathOrder[j];
-                const timeout2 = setTimeout(() => {
-                    const nodeElem = document.getElementById(
-                        `${gridName}-${node.row}-${node.col}`,
-                    );
+        for (let j = 0; j <= nodesInShortestPathOrder.length; j++) {
+            const node = nodesInShortestPathOrder[j];
+            const timeout2 = setTimeout(() => {
+                const nodeElem = document.getElementById(
+                    `${gridName}-${node.row}-${node.col}`,
+                );
 
-                    // ????
-                    if (!nodeElem) {
-                        return;
-                    }
-
-                    nodeElem.className = "node node-shortest-path";
-                }, (delay + j) * 10);
-
-                timers.current.set(timeout2, timeout2);
-
-                if (j >= nodesInShortestPathOrder.length) {
-                    clearTimeout(timeout2);
-                    setTimeout(() => {
-                        if (!algorithm) {
-                            setIsReady(false);
-                        }
-                        if (gridName === "first") {
-                            setGridOneAnimating(false);
-                        } else {
-                            setGridTwoAnimating(false);
-                        }
-                        setIsFinished(true);
-                    }, (delay + nodesInShortestPathOrder.length + 1) * 10);
-
-                    resolve();
+                // ????
+                if (!nodeElem) {
                     return;
                 }
+
+                nodeElem.className = "node node-shortest-path";
+            }, (delay + j) * 10);
+
+            timers.current.set(timeout2, timeout2);
+
+            if (j >= nodesInShortestPathOrder.length) {
+                clearTimeout(timeout2);
+                setTimeout(() => {
+                    if (!algorithm) {
+                        setIsReady(false);
+                    }
+                    if (gridName === "first") {
+                        setGridOneAnimating(false);
+                    } else {
+                        setGridTwoAnimating(false);
+                    }
+                    setIsFinished(true);
+                }, (delay + nodesInShortestPathOrder.length + 1) * 10);
+
+                return;
             }
-        });
+        }
     };
 
     const animate = (visitedNodesInOrder) => {
-        return new Promise((resolve, reject) => {
-            for (let i = 0; i <= visitedNodesInOrder.length; i++) {
-                const node = visitedNodesInOrder[i];
+        for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+            const node = visitedNodesInOrder[i];
 
-                const timeout1 = setTimeout(() => {
-                    const nodeElem = document.getElementById(
-                        `${gridName}-${node.row}-${node.col}`,
-                    );
+            const timeout1 = setTimeout(() => {
+                const nodeElem = document.getElementById(
+                    `${gridName}-${node.row}-${node.col}`,
+                );
 
-                    // ????
-                    if (!nodeElem) {
-                        return;
-                    }
-
-                    nodeElem.className = "node node-visited";
-                }, i * 10);
-
-                timers.current.set(timeout1, timeout1);
-
-                if (i >= visitedNodesInOrder.length) {
-                    clearTimeout(timeout1);
-                    resolve();
+                // ????
+                if (!nodeElem) {
                     return;
                 }
+
+                nodeElem.className = "node node-visited";
+            }, i * 10);
+
+            timers.current.set(timeout1, timeout1);
+
+            if (i >= visitedNodesInOrder.length) {
+                clearTimeout(timeout1);
+                return;
             }
-        });
+        }
     };
 
-    const visualizeDijkstra = async () => {
+    const visualizeDijkstra = () => {
         const startNode = grid[startNodePos.row][startNodePos.col];
         const endNode = grid[endNodePos.row][endNodePos.col];
 
         const visitedNodes = dijkstra(grid, startNode, endNode);
         const shortestPath = getNodesInShortestPathOrder(endNode);
 
-        await animate(visitedNodes);
-        await animateShortestPath(shortestPath, visitedNodes.length);
+        animate(visitedNodes);
+        animateShortestPath(shortestPath, visitedNodes.length);
 
         setStats({
             visitedNodesLength: visitedNodes.length,
@@ -192,14 +186,14 @@ export default function Grid({
         });
     };
 
-    const visualizeAStar = async () => {
+    const visualizeAStar = () => {
         const startNode = grid[startNodePos.row][startNodePos.col];
         const endNode = grid[endNodePos.row][endNodePos.col];
         const visitedNodes = astar(grid, startNode, endNode);
         const shortestPath = getNodesInShortestPathOrderAStar(endNode);
 
-        await animate(visitedNodes);
-        await animateShortestPath(shortestPath, visitedNodes.length);
+        animate(visitedNodes);
+        animateShortestPath(shortestPath, visitedNodes.length);
 
         setStats({
             visitedNodesLength: visitedNodes.length,
@@ -207,14 +201,14 @@ export default function Grid({
         });
     };
 
-    const visualizeBFS = async () => {
+    const visualizeBFS = () => {
         const startNode = grid[startNodePos.row][startNodePos.col];
         const endNode = grid[endNodePos.row][endNodePos.col];
         const visitedNodes = bfs(grid, startNode, endNode);
         const shortestPath = getNodesInShortestPathOrderBFS(endNode);
 
-        await animate(visitedNodes);
-        await animateShortestPath(shortestPath, visitedNodes.length);
+        animate(visitedNodes);
+        animateShortestPath(shortestPath, visitedNodes.length);
 
         setStats({
             visitedNodesLength: visitedNodes.length,
@@ -224,14 +218,14 @@ export default function Grid({
         return;
     };
 
-    const visualizeDFS = async () => {
+    const visualizeDFS = () => {
         const startNode = grid[startNodePos.row][startNodePos.col];
         const endNode = grid[endNodePos.row][endNodePos.col];
         const visitedNodes = dfs(grid, startNode, endNode);
         const shortestPath = getNodesInShortestPathOrderDFS(endNode);
 
-        await animate(visitedNodes);
-        await animateShortestPath(shortestPath, visitedNodes.length);
+        animate(visitedNodes);
+        animateShortestPath(shortestPath, visitedNodes.length);
 
         setStats({
             visitedNodesLength: visitedNodes.length,
