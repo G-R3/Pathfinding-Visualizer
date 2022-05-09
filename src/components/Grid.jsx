@@ -357,22 +357,19 @@ export default function Grid({
 
     const handleMouseDown = (node) => {
         if (visualize) return;
-
         if (node.startNode) {
             setIsMovingStartNode(true);
         } else if (node.endNode) {
             setIsMovingEndNode(true);
         } else {
             const newGrid = createWall(grid, node);
-            setIsMouseDown(true);
             if (parentGrid) {
                 setParentGrid(newGrid);
-                return;
+            } else {
+                setGrid(newGrid);
             }
-            setGrid(newGrid);
         }
         setIsMouseDown(true);
-        return null;
     };
     const handleMouseEnter = (node) => {
         if (visualize || !isMouseDown) return;
