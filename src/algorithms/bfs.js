@@ -27,12 +27,9 @@ export const bfs = (grid, startNode, endNode) => {
         // update neighbors of our current node
         let neighbors = getUnvisitedNeighbors(currentNode, grid);
         for (let neighbor of neighbors) {
-            if (!neighbor.isVisited) {
-                neighbor.isVisited = true;
-                neighbor.previousNode = currentNode;
-                neighbor.distance = currentNode.distance + 1;
-                list.push(neighbor);
-            }
+            neighbor.isVisited = true;
+            neighbor.previousNode = currentNode;
+            list.push(neighbor);
         }
     }
 
