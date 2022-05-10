@@ -407,7 +407,7 @@ export default function Grid({
                 />
                 <div className="Grid-Controller-buttons">
                     <button
-                        className="btn clearpath-button"
+                        className="btn cleargrid-button"
                         onClick={() =>
                             clearCurrentGrid(
                                 grid,
@@ -424,7 +424,7 @@ export default function Grid({
                         <AiOutlineClear size={25} />
                     </button>
                     <button
-                        className="btn cleargrid-button"
+                        className="btn clearpath-button"
                         onClick={() =>
                             clearCurrentPath(
                                 grid,
