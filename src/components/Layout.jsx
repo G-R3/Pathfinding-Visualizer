@@ -9,7 +9,7 @@ export default function Layout() {
             <div className="header">
                 <h1 className="header-title">
                     <GiPathDistance size={40} className="header-logo" />
-                    Visualizer
+                    Pathfinding Visualizer
                 </h1>
                 <ul className="header-nav">
                     <li className="link">
