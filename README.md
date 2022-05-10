@@ -17,18 +17,18 @@ A react web app to visualize pathfinding algorithms
 -   [React Router](https://reactrouter.com/)
 -   [GSAP](https://greensock.com/gsap/)
 
-## Get Started
+## Getting Started
 
 1. install the project depencies
 
-```
-npm install
+```bash
+    > npm install
 ```
 
 2. run the app in development mode
 
-```
-npm start
+```bash
+    > npm start
 ```
 
 ## Contributors 📝
