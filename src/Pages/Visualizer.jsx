@@ -164,6 +164,39 @@ export default function Visualizer() {
         return newGrid;
     };
 
+    const clearAllGrids = (grid) => {
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[row].length; col++) {
+                let node = grid[row][col];
+                if (node.startNode)
+                    document.getElementById(`first-${row}-${col}`).className =
+                        "node start-node";
+                else if (node.endNode) {
+                    document.getElementById(`first-${row}-${col}`).className =
+                        "node end-node";
+                } else {
+                    document.getElementById(`first-${row}-${col}`).className =
+                        "node";
+                }
+            }
+        }
+        for (let row = 0; row < grid.length; row++) {
+            for (let col = 0; col < grid[row].length; col++) {
+                let node = grid[row][col];
+                if (node.startNode)
+                    document.getElementById(`second-${row}-${col}`).className =
+                        "node start-node";
+                else if (node.endNode) {
+                    document.getElementById(`second-${row}-${col}`).className =
+                        "node end-node";
+                } else {
+                    document.getElementById(`second-${row}-${col}`).className =
+                        "node";
+                }
+            }
+        }
+    };
+
     const clearGrid = (
         grid,
         gridName,
@@ -172,6 +205,10 @@ export default function Visualizer() {
         endNodeRows,
         endNodeCols,
     ) => {
+        if (mirrorGrids) {
+            clearAllGrids(grid);
+        } else {
+        }
         for (let row = 0; row < grid.length; row++) {
             for (let col = 0; col < grid[row].length; col++) {
                 let node = grid[row][col];
