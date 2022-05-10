@@ -1,9 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { GridContext } from "../context/gridContext";
 import Navbar from "../components/Navbar";
 import Grid from "../components/Grid";
+import gsap from "gsap";
+import Transition from "../components/Transition";
 
 export default function Visualizer() {
+    const main = gsap.timeline();
+    const mainh1 = useRef(null);
+    const mainimg = useRef(null);
+
     const [error, setError] = useState(false);
     const [gridOneIsReady, setGridOneIsReady] = useState(false);
     const [gridTwoIsReady, setGridTwoIsReady] = useState(false);
@@ -33,6 +39,28 @@ export default function Visualizer() {
         const newGrid = getGrid(50, 20);
         setParentGrid(newGrid);
     }, [mirrorGrids]);
+
+    useEffect(() => {
+        main.from(
+            mainh1.current,
+            {
+                duration: 0.6,
+                skewX: 10,
+                x: -100,
+                opacity: 0,
+            },
+            "-=3.5",
+        );
+        main.from(
+            mainimg.current,
+            {
+                duration: 0.5,
+                y: -200,
+                opacity: 0,
+            },
+            "-=3",
+        );
+    }, [main]);
 
     const getGrid = (
         numRows = 50,
@@ -188,45 +216,48 @@ export default function Visualizer() {
     };
 
     return (
-        <div>
-            <Navbar
-                handleClick={visualize}
-                error={error}
-                setMirrorGrids={setMirrorGrids}
-                mirroredGrids={mirrorGrids}
-            />
-            <main>
-                <div className="Grid-container">
-                    <Grid
-                        getGrid={getGrid}
-                        setIsReady={setGridOneIsReady}
-                        gridName="first"
-                        clearGrid={clearGrid}
-                        clearPath={clearPath}
-                        parentGrid={mirrorGrids ? parentGrid : null}
-                        setParentGrid={mirrorGrids ? setParentGrid : null}
-                        startNodeParent={parentStartNodePos}
-                        endNodeParent={parentEndNodePos}
-                        setStartNodeParent={setParentStartNodePos}
-                        setEndNodeParent={setParentEndNodePos}
-                    />
-                </div>
-                <div className="Grid-container">
-                    <Grid
-                        getGrid={getGrid}
-                        setIsReady={setGridTwoIsReady}
-                        gridName="second"
-                        clearGrid={clearGrid}
-                        clearPath={clearPath}
-                        parentGrid={mirrorGrids ? parentGrid : null}
-                        setParentGrid={mirrorGrids ? setParentGrid : null}
-                        startNodeParent={parentStartNodePos}
-                        setStartNodeParent={setParentStartNodePos}
-                        setEndNodeParent={setParentEndNodePos}
-                        endNodeParent={parentEndNodePos}
-                    />
-                </div>
-            </main>
-        </div>
+        <>
+            <Transition timeline={main} />
+            <div>
+                <Navbar
+                    handleClick={visualize}
+                    error={error}
+                    setMirrorGrids={setMirrorGrids}
+                    mirroredGrids={mirrorGrids}
+                />
+                <main>
+                    <div className="Grid-container">
+                        <Grid
+                            getGrid={getGrid}
+                            setIsReady={setGridOneIsReady}
+                            gridName="first"
+                            clearGrid={clearGrid}
+                            clearPath={clearPath}
+                            parentGrid={mirrorGrids ? parentGrid : null}
+                            setParentGrid={mirrorGrids ? setParentGrid : null}
+                            startNodeParent={parentStartNodePos}
+                            endNodeParent={parentEndNodePos}
+                            setStartNodeParent={setParentStartNodePos}
+                            setEndNodeParent={setParentEndNodePos}
+                        />
+                    </div>
+                    <div className="Grid-container">
+                        <Grid
+                            getGrid={getGrid}
+                            setIsReady={setGridTwoIsReady}
+                            gridName="second"
+                            clearGrid={clearGrid}
+                            clearPath={clearPath}
+                            parentGrid={mirrorGrids ? parentGrid : null}
+                            setParentGrid={mirrorGrids ? setParentGrid : null}
+                            startNodeParent={parentStartNodePos}
+                            setStartNodeParent={setParentStartNodePos}
+                            setEndNodeParent={setParentEndNodePos}
+                            endNodeParent={parentEndNodePos}
+                        />
+                    </div>
+                </main>
+            </div>
+        </>
     );
 }
